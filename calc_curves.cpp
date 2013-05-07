@@ -5,9 +5,10 @@
 #include <iterator>
 #include <sstream>
 #include <unordered_map>
-#include "convert.h"
 #include <algorithm>
-#include "perf_measures/Measure.h"
+
+#include "convert.h"
+#include "Measure.h"
 #include "Performance.h"
 
 using namespace std;
@@ -64,12 +65,20 @@ int main(int argc, char *argv[])
     /* second -> the label-prediction pair 2nd second -> the label */
     ROCCurveUnnormalized unroc(it->second.first, it->second.second);
     unroc.compute();
-    cout << "----" << endl;
-    unroc.printJSON(it->first, isSlim);
-    cerr << endl;
 
     Performance<FPR, TPR> perf(unroc);
     perf.compute();
+
+    cout << "----" << endl;
+    cout << "{" << endl;
+    cout << "\"pred\":";
+    unroc.printJSON(it->first, isSlim);
+    cout << "," << endl << "\"perf\":";
+    perf.printJSON(it->first);
+    cout << endl;
+    cout << "}" << endl;
+    cerr << endl;
+
   }
 
 }

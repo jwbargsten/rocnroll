@@ -1,8 +1,8 @@
-#include "ROCCurveUnnormalized.h"
 #include <limits>
 
-template <typename Iter>
-std::string join(Iter begin, Iter end, std::string const& separator);
+#include "ROCCurveUnnormalized.h"
+#include "misc.h"
+#include <stdexcept>
 
 ROCCurveUnnormalized::ROCCurveUnnormalized(vector<double>& pp, vector<int>& ll) :
   p(pp), l(ll)
@@ -49,10 +49,12 @@ void ROCCurveUnnormalized::compute()
 
     cutoffs.push_back(std::numeric_limits<double>::max());
 
-    /* cumulative sum */
-    int num_pred = 0;
-    num_uniq_pred = 0;
+    num_pred = 0;
 
+    /* start with one prediction since we pushed std values above on the arrays */
+    num_uniq_pred = 1;
+
+    /* variables for cumulative sum */
     int fp_tmp = 0;
     int tp_tmp = 0;
     for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it)
@@ -84,9 +86,11 @@ void ROCCurveUnnormalized::compute()
       num_neg_pred.push_back(tn.back() + fn.back());
 
     }
-    cerr << " " << num_uniq_pred << "/" << num_pred;;
-    if(num_pred != p.size()) 
-      cerr << "ERROR number of total predictions do not fit";
+    cerr << " " << num_uniq_pred << "/" << num_pred;
+    if(num_pred != p.size())
+      throw std::runtime_error("ERROR number of total predictions do not fit");
+    if(num_uniq_pred != cutoffs.size() ||  num_uniq_pred != fp.size())
+      throw std::runtime_error("ERROR number of unique predictions do not fit");
 
     return;
 }
@@ -115,15 +119,17 @@ void ROCCurveUnnormalized::printJSON(const string& name, bool slim)
   cout.precision(15);
   cout << "{" << endl;
   if(!name.empty())
-    cout << "  \"name\":\"" << name << "\"," << endl;
+    cout << "  \"_name\":\"" << name << "\"," << endl;
   if(!slim) {
     cout << "  \"l\":[" << join<vector<int>::const_iterator>(l.begin(), l.end(), ",") << "]," << endl;
     cout << "  \"p\":[" << join<vector<double>::const_iterator>(p.begin(), p.end(), ",") << "]," << endl;
-    cout << "  \"idx\":[" << join<vector<int>::const_iterator>(idcs.begin(), idcs.end(), ",") << "]," << endl;
+    //not necessary
+    //cout << "  \"idx\":[" << join<vector<int>::const_iterator>(idcs.begin(), idcs.end(), ",") << "]," << endl;
   }
   cout << "  \"num_pos\":" << num_pos << "," << endl;
   cout << "  \"num_neg\":" << num_neg << "," << endl;
   cout << "  \"num_pred\":" << num_pred << "," << endl;
+  cout << "  \"num_uniq_pred\":" << num_uniq_pred << "," << endl;
   cout << "  \"num_pos_pred\":[" << join<vector<int>::const_iterator>(num_pos_pred.begin(), num_pos_pred.end(), ",") << "]," << endl;
   cout << "  \"num_neg_pred\":[" << join<vector<int>::const_iterator>(num_neg_pred.begin(), num_neg_pred.end(), ",") << "]," << endl;
 
@@ -133,7 +139,7 @@ void ROCCurveUnnormalized::printJSON(const string& name, bool slim)
   cout << "  \"tn\":[" << join<vector<int>::const_iterator>(tn.begin(), tn.end(), ",") << "]," << endl;
 
   cout << "  \"cutoffs\":[" << join<vector<double>::const_iterator>(cutoffs.begin(), cutoffs.end(), ",") << "]" << endl;
-  cout << "}" << endl;
+  cout << "}";
 }
 
 void ROCCurveUnnormalized::printJSON()
@@ -141,13 +147,3 @@ void ROCCurveUnnormalized::printJSON()
   printJSON(string(), true);
 }
 
-template <typename Iter>
-std::string join(Iter begin, Iter end, std::string const& separator)
-{
-  std::ostringstream result;
-  if (begin != end)
-    result << *begin++;
-  while (begin != end)
-    result << separator << *begin++;
-  return result.str();
-}

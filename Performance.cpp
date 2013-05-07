@@ -1,6 +1,7 @@
 #include <vector>
 #include "Performance.h"
 #include "misc.h"
+#include "Measure.h"
 
 using namespace std;
 
@@ -12,7 +13,6 @@ void Performance<MX, MY>::combine()
 template <class MX, class MY>
 void Performance<MX, MY>::compute()
 {
-  /*
   y_values.clear();
   x_values.clear();
   alpha_values.clear();
@@ -54,11 +54,5 @@ void Performance<MX, MY>::compute()
 
     alpha_values.push_back(prediction.cutoffs[i]);
   }
-  */
   return;
-}
-
-template <class MX, class MY>
-vector<pair<double, double>> Performance<MX, MY>::result()
-{
 }
