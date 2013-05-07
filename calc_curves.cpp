@@ -7,7 +7,8 @@
 #include <unordered_map>
 #include "convert.h"
 #include <algorithm>
-#include "ROCCurveUnnormalized.h"
+#include "perf_measures/Measure.h"
+#include "Performance.h"
 
 using namespace std;
 
@@ -66,6 +67,9 @@ int main(int argc, char *argv[])
     cout << "----" << endl;
     unroc.printJSON(it->first, isSlim);
     cerr << endl;
+
+    Performance<FPR, TPR> perf(unroc);
+    perf.compute();
   }
 
 }

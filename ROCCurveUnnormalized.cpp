@@ -17,7 +17,6 @@ void ROCCurveUnnormalized::compute()
     num_pos = 0;
     num_neg = 0;
 
-    num_pred = p.size();
     for(vector<int>::const_iterator it = l.begin(); it != l.end(); ++it) {
       if(*it > 0)
         num_pos++;
@@ -51,14 +50,14 @@ void ROCCurveUnnormalized::compute()
     cutoffs.push_back(std::numeric_limits<double>::max());
 
     /* cumulative sum */
-    int total = 0;
-    int unique = 0;
+    int num_pred = 0;
+    num_uniq_pred = 0;
 
     int fp_tmp = 0;
     int tp_tmp = 0;
     for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it)
     {
-      total++;
+      num_pred++;
       /* skip duplicates */
 
       fp_tmp += -1 * (l[*it] - 1);
@@ -68,7 +67,7 @@ void ROCCurveUnnormalized::compute()
         continue;
       }
 
-      unique++;
+      num_uniq_pred++;
       cutoffs.push_back(p[*it]);
 
       /* invert: 0 -> 1, 1 -> 0 */
@@ -85,7 +84,9 @@ void ROCCurveUnnormalized::compute()
       num_neg_pred.push_back(tn.back() + fn.back());
 
     }
-    cerr << " " << unique << "/" << total;;
+    cerr << " " << num_uniq_pred << "/" << num_pred;;
+    if(num_pred != p.size()) 
+      cerr << "ERROR number of total predictions do not fit";
 
     return;
 }
@@ -111,6 +112,7 @@ vector<int> ROCCurveUnnormalized::order(vector<double>& d)
 
 void ROCCurveUnnormalized::printJSON(const string& name, bool slim)
 {
+  cout.precision(15);
   cout << "{" << endl;
   if(!name.empty())
     cout << "  \"name\":\"" << name << "\"," << endl;

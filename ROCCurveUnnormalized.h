@@ -1,3 +1,6 @@
+#ifndef ROCNROLL_PREDICTION_H
+#define ROCNROLL_PREDICTION_H
+
 #include <vector>
 #include <fstream>
 #include <string>
@@ -27,6 +30,7 @@ public:
   int num_pos;
   int num_neg;
   int num_pred;
+  int num_uniq_pred;
   vector<int> num_pos_pred;
   vector<int> num_neg_pred;
 
@@ -46,3 +50,5 @@ public:
   void printJSON(const string&, bool);
   void printJSON();
 };
+
+#endif
