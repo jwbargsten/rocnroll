@@ -23,6 +23,7 @@ vector<int> order(vector<double>& d);
  */
 int main(int argc, char *argv[])
 {
+  std::cout.precision(15);
   unordered_map<string, pair<vector<double>, vector<int>>> data;
 
   ifstream in(argv[1]);
