@@ -2,7 +2,7 @@
 #define ROCNROLL_PERFORMANCE_H
 
 #include <stdexcept>
-#include "ROCCurveUnnormalized.h"
+#include "Prediction.h"
 #include "Measure.h"
 #include <vector>
 #include "Performance.h"
@@ -21,7 +21,7 @@ class Performance {
   MX measure_x;
   MY measure_y;
 
-  ROCCurveUnnormalized prediction;
+  Prediction prediction;
 
   vector<double> x_values;
   vector<double> y_values;
@@ -31,7 +31,7 @@ class Performance {
   void combine();
 
 public:
-  Performance(const ROCCurveUnnormalized& prediction_) : measure_x(MX()), measure_y(MY()), prediction(prediction_) {}
+  Performance(const Prediction& prediction_) : measure_x(MX()), measure_y(MY()), prediction(prediction_) {}
   void printJSON(const string& name);
   void printJSON();
   void compute();

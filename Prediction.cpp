@@ -1,18 +1,18 @@
 #include <limits>
 
-#include "ROCCurveUnnormalized.h"
+#include "Prediction.h"
 #include "misc.h"
 #include <stdexcept>
 
-ROCCurveUnnormalized::ROCCurveUnnormalized(vector<double>& pp, vector<int>& ll) :
+Prediction::Prediction(const vector<double>& pp, const vector<int>& ll) :
   p(pp), l(ll)
 {}
 
-ROCCurveUnnormalized::ROCCurveUnnormalized()
+Prediction::Prediction()
 {
 }
 
-void ROCCurveUnnormalized::compute()
+void Prediction::compute()
 {
     num_pos = 0;
     num_neg = 0;
@@ -95,7 +95,7 @@ void ROCCurveUnnormalized::compute()
     return;
 }
 
-vector<int> ROCCurveUnnormalized::order(vector<double>& d)
+vector<int> Prediction::order(vector<double>& d)
 {
   vector<pair<int, vector<double>::const_iterator>> idxPair(d.size());
   int n = 0;
@@ -114,7 +114,7 @@ vector<int> ROCCurveUnnormalized::order(vector<double>& d)
   return(idx);
 }
 
-void ROCCurveUnnormalized::printJSON(const string& name, bool slim)
+void Prediction::printJSON(const string& name, bool slim)
 {
   cout.precision(15);
   cout << "{" << endl;
@@ -142,7 +142,7 @@ void ROCCurveUnnormalized::printJSON(const string& name, bool slim)
   cout << "}";
 }
 
-void ROCCurveUnnormalized::printJSON()
+void Prediction::printJSON()
 {
   printJSON(string(), true);
 }

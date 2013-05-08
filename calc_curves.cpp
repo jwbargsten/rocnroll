@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
   /* calc cutoff/fp/tp for every cv */
 
   /* computed measures (not necessary, output goes to stdout) */
-  //unordered_map<string, ROCCurveUnnormalized> rocdata;
+  //unordered_map<string, Prediction> rocdata;
 
   /* iterate over x-validations */
   unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     cerr << it->first << endl;
     /* first is the name of the group */
     /* second -> the label-prediction pair 2nd second -> the label */
-    ROCCurveUnnormalized unroc(it->second.first, it->second.second);
+    Prediction unroc(it->second.first, it->second.second);
     unroc.compute();
 
     Performance<FPR, TPR> perf(unroc);

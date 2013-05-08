@@ -13,43 +13,39 @@
 
 using namespace std;
 
-class ROCCurveUnnormalized {
+class Prediction {
+    static bool inline pairSort(pair<int , vector<double>::const_iterator> a, pair<int, vector<double>::const_iterator> b)
+    {
+      return(*(a.second) > *(b.second));
+    }
+    vector<int> order(vector<double>& d);
 
+  public:
+    vector<double> p;
+    vector<int> l;
 
-  static bool inline pairSort(pair<int , vector<double>::const_iterator> a, pair<int, vector<double>::const_iterator> b)
-  {
-    return(*(a.second) > *(b.second));
-  }
-  vector<int> order(vector<double>& d);
+    vector<int> idcs;
 
-public:
-  vector<double> p;
-  vector<int> l;
+    int num_pos;
+    int num_neg;
+    int num_pred;
+    int num_uniq_pred;
+    vector<int> num_pos_pred;
+    vector<int> num_neg_pred;
 
-  vector<int> idcs;
+    vector<int> fp;
+    vector<int> tp;
+    vector<int> fn;
+    vector<int> tn;
 
-  int num_pos;
-  int num_neg;
-  int num_pred;
-  int num_uniq_pred;
-  vector<int> num_pos_pred;
-  vector<int> num_neg_pred;
+    vector<double> cutoffs;
 
-  vector<int> fp;
-  vector<int> tp;
-  vector<int> fn;
-  vector<int> tn;
+    Prediction();
+    Prediction(const vector<double>&, const vector<int>&);
 
-  vector<double> cutoffs;
-
-  ROCCurveUnnormalized();
-  ROCCurveUnnormalized(vector<double>&, vector<int>&);
-  //ROCCurveUnnormalized& operator=(const ROCCurveUnnormalized&);
-  //ROCCurveUnnormalized(ROCCurveUnnormalized&);
-
-  void compute();
-  void printJSON(const string&, bool);
-  void printJSON();
+    void compute();
+    void printJSON(const string&, bool);
+    void printJSON();
 };
 
 #endif
