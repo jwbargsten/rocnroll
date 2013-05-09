@@ -14,11 +14,6 @@
 using namespace std;
 
 class Prediction {
-    static bool inline pairSort(pair<int , vector<double>::const_iterator> a, pair<int, vector<double>::const_iterator> b)
-    {
-      return(*(a.second) > *(b.second));
-    }
-    vector<int> order(vector<double>& d);
 
   public:
     vector<double> p;

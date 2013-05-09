@@ -26,6 +26,8 @@ class LinearInterpolation {
   void checkNA();
   public:
 
+  function(v) .approxfun(x, y, v, method, yleft, yright, f)
+
 R_approxfun(double *x, double *y, int nxy, double *xout, double *yout,
 	    int nout, int method, double yleft, double yright, double f)
 
@@ -36,51 +38,10 @@ R_approxfun(double *x, double *y, int nxy, double *xout, double *yout,
    * left-continuous.
    */
 
-    LinearInterpolation(const vector<double>& x, const vector<double>& y, const double& yleft, const double& yright, const double& f);
     double interplolate(const double& x);
 };
 
 
-LinearInterpolation::LinearInterpolation(const vector<double>& x, const vector<double>& y, const double& f, const pair<int, int> &rule)
-{
-
-  if(x.size() != y.size())
-    throw std::runtime_error("size of x and y values are not equal");
-
-
-  if(x_tie.size() < 2)
-    throw std::runtime_error("need at least two unique finite values to interpolate");
-
-
-
-  f1 = f;
-  f2 = 1-f;
-
-  if(rule.first == 1)
-    ylow = - std::numeric_limits<double>::infinity();
-  else
-    ylow = 
-  // rule == 1: yleft na
-  // rule == 2: yleft = y[0]
-  yl = yleft;
-  // rule == 1: yright na
-  // rule == 2: yright = y[last]
-  yr = yright;
-
-  regularize
-    remove na/non-finite
-    check for double x values
-    sort values
-  approxfun {
-
-    if (missing(yleft))
-	yleft <- if (rule[1L] == 1) NA else y[1L]
-    if (missing(yright))
-	yright <- if (rule[2L] == 1) NA else y[length(y)]
-    stopifnot(length(yleft) == 1L, length(yright) == 1L, length(f) == 1L)
-  }
-
-}
 
 double interpolate(const double& xout)
 {
