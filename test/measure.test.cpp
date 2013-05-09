@@ -24,13 +24,19 @@ bool suite_MeasureTest_init = false;
 static MeasureTest suite_MeasureTest;
 
 static CxxTest::List Tests_MeasureTest = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_MeasureTest( "measure.test.h", 11, "MeasureTest", suite_MeasureTest, Tests_MeasureTest );
+CxxTest::StaticSuiteDescription suiteDescription_MeasureTest( "measure.test.h", 12, "MeasureTest", suite_MeasureTest, Tests_MeasureTest );
 
 static class TestDescription_suite_MeasureTest_testAUC : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MeasureTest_testAUC() : CxxTest::RealTestDescription( Tests_MeasureTest, suiteDescription_MeasureTest, 14, "testAUC" ) {}
+ TestDescription_suite_MeasureTest_testAUC() : CxxTest::RealTestDescription( Tests_MeasureTest, suiteDescription_MeasureTest, 15, "testAUC" ) {}
  void runTest() { suite_MeasureTest.testAUC(); }
 } testDescription_suite_MeasureTest_testAUC;
+
+static class TestDescription_suite_MeasureTest_testTPRFPR : public CxxTest::RealTestDescription {
+public:
+ TestDescription_suite_MeasureTest_testTPRFPR() : CxxTest::RealTestDescription( Tests_MeasureTest, suiteDescription_MeasureTest, 46, "testTPRFPR" ) {}
+ void runTest() { suite_MeasureTest.testTPRFPR(); }
+} testDescription_suite_MeasureTest_testTPRFPR;
 
 #include <cxxtest/Root.cpp>
 const char* CxxTest::RealWorldDescription::_worldName = "cxxtest";

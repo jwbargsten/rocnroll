@@ -47,7 +47,7 @@ void Prediction::compute()
     num_pos_pred.push_back(tp.back() + fp.back());
     num_neg_pred.push_back(tn.back() + fn.back());
 
-    cutoffs.push_back(std::numeric_limits<double>::max());
+    cutoffs.push_back(std::numeric_limits<double>::infinity());
 
     num_pred = 0;
 

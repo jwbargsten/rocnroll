@@ -48,6 +48,10 @@ public:
 
 inline double convertToDouble(std::string const& s)
 {
+  if(s == "Inf")
+    return std::numeric_limits<double>::infinity();
+  if(s == "-Inf")
+    return -std::numeric_limits<double>::infinity();
   std::istringstream i(s);
   double x;
   if (!(i >> x))

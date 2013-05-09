@@ -16,14 +16,13 @@ class Performance {
 
   Prediction prediction;
 
+
+public:
   vector<double> x_values;
   vector<double> y_values;
 
   vector<double> alpha_values;
 
-  void combine();
-
-public:
   Performance(const Prediction& prediction_) : measure_x(MX()), measure_y(MY()), prediction(prediction_) {}
   void printJSON(const string& name);
   void printJSON();
@@ -33,18 +32,13 @@ public:
 
 
 template <class MX, class MY>
-void Performance<MX, MY>::combine()
-{
-}
-
-template <class MX, class MY>
 void Performance<MX, MY>::compute()
 {
   y_values.clear();
   x_values.clear();
   alpha_values.clear();
 
-  vector<double> mx = measure_x.compute(
+  x_values = measure_x.compute(
       prediction.num_uniq_pred,
       prediction.num_neg,
       prediction.num_pos,
@@ -55,7 +49,7 @@ void Performance<MX, MY>::compute()
       prediction.tn
     );
 
-  vector<double> my = measure_y.compute(
+  y_values = measure_y.compute(
       prediction.num_uniq_pred,
       prediction.num_neg,
       prediction.num_pos,
@@ -67,7 +61,7 @@ void Performance<MX, MY>::compute()
     );
 
   /* set alpha values to cutoff if we have fitting measures */
-  if(mx.size() != my.size() || mx.size() != prediction.num_uniq_pred)
+  if(x_values.size() == y_values.size() && x_values.size() == prediction.num_uniq_pred)
     alpha_values = prediction.cutoffs;
 
   return;
