@@ -24,11 +24,11 @@ bool suite_MeasureTest_init = false;
 static MeasureTest suite_MeasureTest;
 
 static CxxTest::List Tests_MeasureTest = { 0, 0 };
-CxxTest::StaticSuiteDescription suiteDescription_MeasureTest( "measure.test.h", 9, "MeasureTest", suite_MeasureTest, Tests_MeasureTest );
+CxxTest::StaticSuiteDescription suiteDescription_MeasureTest( "measure.test.h", 11, "MeasureTest", suite_MeasureTest, Tests_MeasureTest );
 
 static class TestDescription_suite_MeasureTest_testAUC : public CxxTest::RealTestDescription {
 public:
- TestDescription_suite_MeasureTest_testAUC() : CxxTest::RealTestDescription( Tests_MeasureTest, suiteDescription_MeasureTest, 12, "testAUC" ) {}
+ TestDescription_suite_MeasureTest_testAUC() : CxxTest::RealTestDescription( Tests_MeasureTest, suiteDescription_MeasureTest, 14, "testAUC" ) {}
  void runTest() { suite_MeasureTest.testAUC(); }
 } testDescription_suite_MeasureTest_testAUC;
 

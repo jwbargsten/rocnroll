@@ -5,16 +5,9 @@
 #include "Prediction.h"
 #include "Measure.h"
 #include <vector>
-#include "Performance.h"
 #include "misc.h"
 
 using namespace std;
-class BadNumber : public std::runtime_error {
-public:
-  BadNumber(std::string const& s)
-    : std::runtime_error(s)
-    { }
-};
 
 template <class MX, class MY>
 class Performance {
@@ -75,7 +68,7 @@ void Performance<MX, MY>::compute()
 
   /* set alpha values to cutoff if we have fitting measures */
   if(mx.size() != my.size() || mx.size() != prediction.num_uniq_pred)
-    alpha_values = cutoffs;
+    alpha_values = prediction.cutoffs;
 
   return;
 }

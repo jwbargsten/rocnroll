@@ -12,7 +12,15 @@
 
 using namespace std;
 
+vector<int> order(vector<double>& d);
 vector<string> splitLine(string& line);
+
+class BadNumber : public std::runtime_error {
+public:
+  BadNumber(std::string const& s)
+    : std::runtime_error(s)
+    { }
+};
 
 template<typename T>
 inline bool is_finite(T value)
@@ -60,26 +68,5 @@ inline bool pairSort(pair<int , vector<double>::const_iterator> a, pair<int, vec
 {
   return(*(a.second) > *(b.second));
 }
-
-vector<int> order(vector<double>& d)
-{
-  vector<pair<int, vector<double>::const_iterator> > idxPair(d.size());
-  int n = 0;
-  for(vector<double>::const_iterator it = d.begin(); it != d.end(); ++it, ++n)
-  {
-    idxPair[n] = make_pair(n, it);
-  }
-  sort(idxPair.begin(), idxPair.end(), pairSort);
-
-  vector<int> idx;
-  for(vector<pair<int, vector<double>::const_iterator> >::const_iterator it = idxPair.begin(); it != idxPair.end(); ++it)
-  {
-    idx.push_back(it->first);
-  }
-
-  return(idx);
-}
-
-#include "misc.cpp"
 
 #endif
