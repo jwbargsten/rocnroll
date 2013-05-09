@@ -12,6 +12,8 @@
 
 using namespace std;
 
+vector<string> splitLine(string& line);
+
 template<typename T>
 inline bool is_finite(T value)
 {
@@ -77,5 +79,7 @@ vector<int> order(vector<double>& d)
 
   return(idx);
 }
+
+#include "misc.cpp"
 
 #endif

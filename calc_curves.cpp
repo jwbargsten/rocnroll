@@ -7,15 +7,10 @@
 #include <unordered_map>
 #include <algorithm>
 
-#include "convert.h"
 #include "Measure.h"
 #include "Performance.h"
 
 using namespace std;
-
-vector<string> splitLine(string&);
-bool pairSort(pair<int , vector<double>::const_iterator>, pair<int, vector<double>::const_iterator>);
-vector<int> order(vector<double>& d);
 
 /*
  * input data structure: group <tab> prediction <tab> label
@@ -83,16 +78,3 @@ int main(int argc, char *argv[])
 
 }
 
-vector<string> splitLine(string& line)
-{
-  vector<string>   result;
-
-  stringstream          lineStream(line);
-  string                cell;
-
-  while(getline(lineStream,cell,'\t'))
-  {
-      result.push_back(cell);
-  }
-  return result;
-}
