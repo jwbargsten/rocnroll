@@ -10,12 +10,12 @@ SRCS=Prediction.cpp misc.cpp approx.cpp
 
 OBJS=$(subst .cpp,.o,$(SRCS))
 
-all: calc_auc calc_all_json
+all: calc_auc calc_all_yaml
 
 calc_auc: $(OBJS) calc_auc.o
 	g++ $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-calc_all_json: $(OBJS) calc_all_json.o
+calc_all_yaml: $(OBJS) calc_all_yaml.o
 	g++ $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 %.o: %.cpp

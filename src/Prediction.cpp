@@ -95,7 +95,7 @@ void Prediction::compute()
 }
 
 
-void Prediction::printJSON(const string& name, bool slim, const string& indent)
+void Prediction::printYAML(const string& name, bool slim, const string& indent)
 {
   cout.precision(15);
   if(!name.empty())
@@ -136,8 +136,8 @@ void Prediction::printJSON(const string& name, bool slim, const string& indent)
   cout << indent << " - " << join<vector<double>::const_iterator>(cutoffs.begin(), cutoffs.end(), "\n" + indent + " - ") << endl;
 }
 
-void Prediction::printJSON()
+void Prediction::printYAML()
 {
-  printJSON(string(), true, "");
+  printYAML(string(), true, "");
 }
 

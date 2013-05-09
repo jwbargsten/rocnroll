@@ -38,8 +38,8 @@ class Prediction {
     Prediction(const vector<double>&, const vector<int>&);
 
     void compute();
-    void printJSON(const string&, bool, const string&);
-    void printJSON();
+    void printYAML(const string&, bool, const string&);
+    void printYAML();
 };
 
 #endif
