@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
   /* iterate over x-validations */
   unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
-    cerr << it->first << ":";
+    cerr << it->first << ": ";
     /* first is the name of the group */
     /* second -> the label-prediction pair 2nd second -> the label */
     Prediction unroc(it->second.first, it->second.second);

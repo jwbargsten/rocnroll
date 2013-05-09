@@ -65,7 +65,6 @@ void Prediction::compute()
       fp_tmp += -1 * (l[*it] - 1);
       tp_tmp += l[*it];
       if(it + 1 != idcs.end() && p[*it] == p[*(it+1)]) {
-        cerr << ".";
         continue;
       }
 
@@ -86,7 +85,7 @@ void Prediction::compute()
       num_neg_pred.push_back(tn.back() + fn.back());
 
     }
-    cerr << " " << num_uniq_pred << "/" << num_pred;
+    cerr << num_uniq_pred << "/" << num_pred;
     if(num_pred != p.size())
       throw std::runtime_error("ERROR number of total predictions do not fit");
     if(num_uniq_pred != cutoffs.size() ||  num_uniq_pred != fp.size())
