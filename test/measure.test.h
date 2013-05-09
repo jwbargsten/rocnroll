@@ -39,7 +39,7 @@ class MeasureTest : public CxxTest::TestSuite
 
       Prediction pred(p, l);
       pred.compute();
-      Performance<None, AUC> perf(pred);
+      Performance<None, AUCROC> perf(pred);
       perf.compute();
       TS_ASSERT_DELTA(perf.y_values.front(), 0.9534701, DELTA);
   }

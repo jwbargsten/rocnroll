@@ -10,6 +10,7 @@
 #include "Measure.h"
 #include "Performance.h"
 
+
 using namespace std;
 
 /*
@@ -20,20 +21,19 @@ using namespace std;
  */
 int main(int argc, char *argv[])
 {
+
+  bool isSlim = false;
+
   std::cout.precision(15);
   unordered_map<string, pair<vector<double>, vector<int>>> data;
 
-  ifstream in(argv[1]);
+  int optind = 1;
+  cerr << "reading in " << argv[optind] << endl;
+  ifstream in(argv[optind]);
 
   if(!in || in.bad()) {
       cerr << "Supply the right arguments, you idiot! " << argv[0]  << " [FILENAME]" << endl;
       exit(1);
-  }
-
-  bool isSlim = false;
-  if(argv[2] && string(argv[2]) == "slim") {
-    isSlim = true;
-    cerr << "slim output: no predictions and labels included" << endl;
   }
 
   vector<string> row;
@@ -55,30 +55,16 @@ int main(int argc, char *argv[])
   /* iterate over x-validations */
   unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
-    cerr << it->first << endl;
+    cerr << it->first << ":";
     /* first is the name of the group */
     /* second -> the label-prediction pair 2nd second -> the label */
     Prediction unroc(it->second.first, it->second.second);
     unroc.compute();
 
-    Performance<FPR, TPR> perf_pr(unroc);
-    perf_pr.compute();
-
-    Performance<FPR, TPR> perf_auc(unroc);
+    Performance<None, AUCROC> perf_auc(unroc);
     perf_auc.compute();
-
-    cout << "----" << endl;
-    cout << "{" << endl;
-    cout << "\"pred\":";
-    unroc.printJSON(it->first, isSlim);
-    cout << "," << endl << "\"perf_pr\":";
-    perf_pr.printJSON(it->first);
-    cout << "," << endl << "\"perf_auc\":";
-    perf_auc.printJSON(it->first);
-    cout << endl;
-    cout << "}" << endl;
     cerr << endl;
-
+    cout << it->first << "\t" << perf_auc.y_values.front() << endl;
   }
 
 }
