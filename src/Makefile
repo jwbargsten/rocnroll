@@ -6,17 +6,17 @@ CXXFLAGS=-std=c++0x -O3 -fomit-frame-pointer -march=native
 LDFLAGS=
 LDLIBS=
 
-SRCS= Prediction.cpp misc.cpp approx.cpp
+SRCS=Prediction.cpp misc.cpp approx.cpp
 
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: calc_auc calc_all_json
 
 calc_auc: $(OBJS) calc_auc.o
-	g++ $(LDFLAGS) -o calc_auc $^ $(LDLIBS)
+	g++ $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 calc_all_json: $(OBJS) calc_all_json.o
-	g++ $(LDFLAGS) -o calc_all_json $^ $(LDLIBS)
+	g++ $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $<

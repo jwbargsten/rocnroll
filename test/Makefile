@@ -1,11 +1,32 @@
 .PHONY: all test
 
-test_measure:
-	cxxtestgen --error-printer -o measure.test.cpp measure.test.h
-	g++ -std=c++0x -o t_measure measure.test.cpp ../src/Prediction.cpp ../src/misc.cpp 
-	./t_measure
+CXX=g++
+CXXTEST=cxxtestgen
+CXXTESTFLAGS=--error-printer 
+RM=rm
+CXXFLAGS=-std=c++0x -O3 -fomit-frame-pointer -march=native 
 
-test_approx:
-	cxxtestgen --error-printer -o approx.test.cpp approx.test.h 
-	g++ -std=c++0x -o t_approx approx.test.cpp ../src/approx.cpp
-	./t_approx
+SRCS=$(addprefix ../src/,Prediction.cpp misc.cpp approx.cpp)
+OBJS=$(subst .cpp,.o,$(SRCS))
+ 
+LDFLAGS=
+LDLIBS=
+
+all: test_measure test_approx
+
+%.test.cpp: %.test.h
+	$(CXXTEST) $(CXXTESTFLAGS) -o $@ $< 
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $<
+
+test_measure: $(OBJS) measure.test.o
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	./$@
+
+test_approx: $(OBJS) approx.test.o
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	./$@
+
+clean:
+	$(RM) -v *.o
