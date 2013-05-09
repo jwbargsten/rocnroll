@@ -44,34 +44,34 @@ double SimpleInterpolation::interpolate(const double& v)
 
   int n = x.size();
 
-    /* Approximate  y(v),  given (x,y)[i], i = 0,..,n-1 */
-    int i, j, ij;
+  /* Approximate  y(v),  given (x,y)[i], i = 0,..,n-1 */
+  int i, j, ij;
 
-    i = 0;
-    j = n - 1;
+  i = 0;
+  j = n - 1;
 
-    /* handle out-of-domain points */
-    if(v < x.front()) return ylow;
-    if(v > x.back()) return yhigh;
+  /* handle out-of-domain points */
+  if(v < x.front()) return ylow;
+  if(v > x.back()) return yhigh;
 
-    /* find the correct interval by bisection */
-    while(i < j - 1) { /* x[i] <= v <= x[j] */
-	ij = (i + j)/2; /* i+1 <= ij <= j-1 */
-	if(v < x[ij]) j = ij; else i = ij;
-	/* still i < j */
-    }
-    /* provably have i == j-1 */
+  /* find the correct interval by bisection */
+  while(i < j - 1) { /* x[i] <= v <= x[j] */
+    ij = (i + j)/2; /* i+1 <= ij <= j-1 */
+    if(v < x[ij]) j = ij; else i = ij;
+    /* still i < j */
+  }
+  /* provably have i == j-1 */
 
-    /* interpolation */
+  /* interpolation */
 
-    if(v == x[j]) return y[j];
-    if(v == x[i]) return y[i];
-    /* impossible: if(x[j] == x[i]) return y[i]; */
+  if(v == x[j]) return y[j];
+  if(v == x[i]) return y[i];
+  /* impossible: if(x[j] == x[i]) return y[i]; */
 
-    if(!constant_interpolation) /* linear */
-	return y[i] + (y[j] - y[i]) * ((v - x[i])/(x[j] - x[i]));
-    else /* 2 : constant */
-	return y[i] * f1 + y[j] * f2;
+  if(!constant_interpolation) /* linear */
+    return y[i] + (y[j] - y[i]) * ((v - x[i])/(x[j] - x[i]));
+  else /* 2 : constant */
+    return y[i] * f1 + y[j] * f2;
 }/* approx1() */
 
 pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const vector<double>& y_)
@@ -100,8 +100,8 @@ pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const v
   vector<double>::const_iterator itx;
   vector<double>::const_iterator ity;
 
-  for(itx = x.begin(), ity = y.begin(); itx != x.end() && ity != y.end(); ++itx, ++ity) {
-
+  for(itx = x.begin(), ity = y.begin(); itx != x.end() && ity != y.end(); ++itx, ++ity)
+  {
     if(!is_finite<double>(*itx))
       continue;
     if(!is_finite<double>(*ity))
