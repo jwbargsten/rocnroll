@@ -38,7 +38,7 @@ class Prediction {
     Prediction(const vector<double>&, const vector<int>&);
 
     void compute();
-    void printJSON(const string&, bool);
+    void printJSON(const string&, bool, const string&);
     void printJSON();
 };
 

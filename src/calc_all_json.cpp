@@ -71,31 +71,28 @@ int main(int argc, char *argv[])
     Prediction unroc(it->second.first, it->second.second);
     unroc.compute();
 
-    cout << "----" << endl;
-    cout << "{" << endl;
-    cout << "\"pred\":";
-    unroc.printJSON(it->first, isSlim);
+    cout << "---" << endl;
+    cout << "pred:" << endl;
+    unroc.printJSON(it->first, isSlim, " ");
 
     Performance<FPR, TPR> perf_roc(unroc);
     perf_roc.compute();
 
-    cout << "," << endl << "\"perf_roc\":";
-    perf_roc.printJSON(it->first);
+    cout << "perf_roc:" << endl;
+    //perf_roc.printJSON(it->first);
 
     Performance<None, AUCROC> perf_auc(unroc);
-    perf_auc.compute();
+    //perf_auc.compute();
 
-    cout << "," << endl << "\"perf_auc\":";
-    perf_auc.printJSON(it->first);
+    cout << "perf_auc:" << endl;
+    //perf_auc.printJSON(it->first);
 
     Performance<TPR, PPV> perf_pr(unroc);
-    perf_pr.compute();
+    //perf_pr.compute();
 
-    cout << "," << endl << "\"perf_pr\":";
-    perf_pr.printJSON(it->first);
+    cout << "perf_pr:" << endl;
+    //perf_pr.printJSON(it->first);
 
-    cout << endl;
-    cout << "}" << endl;
     cerr << endl;
 
   }

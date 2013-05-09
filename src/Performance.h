@@ -68,21 +68,19 @@ void Performance<MX, MY>::compute()
 }
 
 template <class MX, class MY>
-void Performance<MX, MY>::printJSON(const string& name)
+void Performance<MX, MY>::printJSON(const string& name, const string& indent)
 {
   cout.precision(15);
-  cout << "{" << endl;
   if(!name.empty())
-    cout << "  \"_name\":\"" << name << "\"," << endl;
-  cout << "  \"x\":[" << join<vector<double>::const_iterator>(x_values.begin(), x_values.end(), ",") << "]," << endl;
-  cout << "  \"y\":[" << join<vector<double>::const_iterator>(y_values.begin(), y_values.end(), ",") << "]," << endl;
+    cout << indent << "_name: " << name << endl;
+  cout << indent << "  \"x\":[" << join<vector<double>::const_iterator>(x_values.begin(), x_values.end(), ",") << "]," << endl;
+  cout << indent << "  \"y\":[" << join<vector<double>::const_iterator>(y_values.begin(), y_values.end(), ",") << "]," << endl;
 
-  cout << "  \"x_measure\":\"" <<  MX::name() << "\"," << endl;
-  cout << "  \"y_measure\":\"" << MY::name() << "\"," << endl;
+  cout << indent << "  \"x_measure\":\"" <<  MX::name() << "\"," << endl;
+  cout << indent << "  \"y_measure\":\"" << MY::name() << "\"," << endl;
 
-  cout << "  \"alpha_values\":[" << join<vector<double>::const_iterator>(alpha_values.begin(), alpha_values.end(), ",") << "]" << endl;
+  cout << indent << "  \"alpha_values\":[" << join<vector<double>::const_iterator>(alpha_values.begin(), alpha_values.end(), ",") << "]" << endl;
 
-  cout << "}";
 }
 
 template <class MX, class MY>
