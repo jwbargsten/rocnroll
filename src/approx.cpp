@@ -22,7 +22,6 @@ SimpleInterpolation::SimpleInterpolation(const vector<double>& x_, const vector<
   if(x.size() < 2)
     throw std::runtime_error("need at least two unique finite values to interpolate");
 
-
   f1 = f_;
   f2 = 1-f_;
 
@@ -76,14 +75,12 @@ double SimpleInterpolation::interpolate(const double& v)
 
 pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const vector<double>& y_)
 {
-
   vector<double> x;
   vector<double> y;
 
   vector<int> idcs = order(x);
 
-  for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it)
-  {
+  for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it) {
     x.push_back(x_[*it]);
     y.push_back(y_[*it]);
   }
@@ -100,15 +97,13 @@ pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const v
   vector<double>::const_iterator itx;
   vector<double>::const_iterator ity;
 
-  for(itx = x.begin(), ity = y.begin(); itx != x.end() && ity != y.end(); ++itx, ++ity)
-  {
+  for(itx = x.begin(), ity = y.begin(); itx != x.end() && ity != y.end(); ++itx, ++ity) {
     if(!is_finite<double>(*itx))
       continue;
     if(!is_finite<double>(*ity))
       continue;
 
-    if(itx != x.begin() && last_x == *itx)
-    {
+    if(itx != x.begin() && last_x == *itx) {
       /* this value and the last are now in the tie-bin */
       if(0 == current_tie_size)
         current_tie_size++;
@@ -116,8 +111,7 @@ pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const v
       y_tie.back() += *ity;
       continue;
     }
-    if(current_tie_size > 0)
-    {
+    if(current_tie_size > 0) {
       y_tie.back() /= current_tie_size;
       current_tie_size = 0;
     }

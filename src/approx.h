@@ -13,6 +13,12 @@ class SimpleInterpolation {
   double yhigh;
   double f1;
   double f2;
+  /* f with constant :
+   * If ‘y0’ and ‘y1’ are the values to the left
+   * and right of the point then the value is ‘y0*(1-f)+y1*f’ so
+   * that ‘f = 0’ is right-continuous and ‘f = 1’ is
+   * left-continuous.
+   */
 
   vector<double> x;
   vector<double> y;
