@@ -77,19 +77,15 @@ void Performance<MX, MY>::printYAML(const string& name, const string& indent)
 {
   cout.precision(15);
   if(!name.empty())
-    cout << indent << "_name: " << name << endl;
-  cout << indent << "x_values:" << endl;
-  cout << indent << " - " << join<vector<double>::const_iterator>(x_values.begin(), x_values.end(), "\n" + indent + " - ") << endl;
+    cout << indent << "_name: \"" << name << "\"" << endl;
+  cout << indent << "x_values: [" << join<vector<double>::const_iterator>(x_values.begin(), x_values.end(), ", ") << "]" << endl;
 
-  cout << indent << "y_values:" << endl;
-  cout << indent << " - " << join<vector<double>::const_iterator>(y_values.begin(), y_values.end(), "\n" + indent + " - ") << endl;
+  cout << indent << "y_values: [" << join<vector<double>::const_iterator>(y_values.begin(), y_values.end(), ", ") << "]" << endl;
 
   cout << indent << "x_name: " << MX::name() << endl;
   cout << indent << "y_name: " << MY::name() << endl;
 
-  cout << indent << "alpha_values:" << endl;
-  cout << indent << " - " << join<vector<double>::const_iterator>(alpha_values.begin(), alpha_values.end(), "\n" + indent + " - ") << endl;
-
+  cout << indent << "alpha_values: [" << join<vector<double>::const_iterator>(alpha_values.begin(), alpha_values.end(), ", ") << "]" << endl;
 }
 
 template <class MX, class MY>

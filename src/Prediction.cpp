@@ -101,11 +101,9 @@ void Prediction::printYAML(const string& name, bool slim, const string& indent)
   if(!name.empty())
     cout << indent << "_name: \"" << name << "\"" << endl;
   if(!slim) {
-    cout << indent << "l:" << endl;
-    cout << indent << " - " << join<vector<int>::const_iterator>(l.begin(), l.end(), "\n" + indent + " - ") << endl;
+    cout << indent << "l: [" << join<vector<int>::const_iterator>(l.begin(), l.end(), ", ") << "]" << endl;
 
-    cout << indent << "p:" << endl;
-    cout << indent << " - " << join<vector<double>::const_iterator>(p.begin(), p.end(), "\n" + indent + " - ") << endl;
+    cout << indent << "p: [" << join<vector<double>::const_iterator>(p.begin(), p.end(), ", ") << "]" << endl;
     //not necessary
     //cout << "  \"idx\":[" << join<vector<int>::const_iterator>(idcs.begin(), idcs.end(), "\n" + indent + " - ") << "]," << endl;
   }
@@ -114,26 +112,15 @@ void Prediction::printYAML(const string& name, bool slim, const string& indent)
   cout << indent << "num_pred: " << num_pred << endl;
   cout << indent << "num_uniq_pred: " << num_uniq_pred << endl;
 
-  cout << indent << "num_pos_pred: " << endl;
-  cout << indent << " - " << join<vector<int>::const_iterator>(num_pos_pred.begin(), num_pos_pred.end(), "\n" + indent + " - ") << endl;
-  
-  cout << indent << "num_neg_pred: " << endl;
-  cout << indent << " - " << join<vector<int>::const_iterator>(num_neg_pred.begin(), num_neg_pred.end(), "\n" + indent + " - ") << endl;
+  cout << indent << "num_pos_pred: [" << join<vector<int>::const_iterator>(num_pos_pred.begin(), num_pos_pred.end(), ", ") << "]" << endl;
+  cout << indent << "num_neg_pred: ["<< join<vector<int>::const_iterator>(num_neg_pred.begin(), num_neg_pred.end(), ", ") << "]" << endl;
 
-  cout << indent << "fp:" << endl;
-  cout << indent << " - " << join<vector<int>::const_iterator>(fp.begin(), fp.end(), "\n" + indent + " - ") << endl;
+  cout << indent << "fp: [" << join<vector<int>::const_iterator>(fp.begin(), fp.end(), ", ") << "]" << endl;
+  cout << indent << "tp: [" << join<vector<int>::const_iterator>(tp.begin(), tp.end(), ", ") << "]" << endl;
+  cout << indent << "fn: [" << join<vector<int>::const_iterator>(fn.begin(), fn.end(), ", ") << "]" << endl;
+  cout << indent << "tn: [" << join<vector<int>::const_iterator>(tn.begin(), tn.end(), ", ") << "]" << endl;
 
-  cout << indent << "tp:" << endl;
-  cout << indent << " - " << join<vector<int>::const_iterator>(tp.begin(), tp.end(), "\n" + indent + " - ") << endl;
-
-  cout << indent << "fn:" << endl;
-  cout << indent << " - " << join<vector<int>::const_iterator>(fn.begin(), fn.end(), "\n" + indent + " - ") << endl;
-
-  cout << indent << "tn:" << endl;
-  cout << indent << " - " << join<vector<int>::const_iterator>(tn.begin(), tn.end(), "\n" + indent + " - ") << endl;
-
-  cout << indent << "cutoffs:" << endl;
-  cout << indent << " - " << join<vector<double>::const_iterator>(cutoffs.begin(), cutoffs.end(), "\n" + indent + " - ") << endl;
+  cout << indent << "cutoffs: [" << join<vector<double>::const_iterator>(cutoffs.begin(), cutoffs.end(), ", ") << "]" << endl;
 }
 
 void Prediction::printYAML()
