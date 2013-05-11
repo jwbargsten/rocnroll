@@ -33,10 +33,11 @@ template <typename Iter>
 std::string join(Iter begin, Iter end, std::string const& separator)
 {
   std::ostringstream result;
+  result.precision(15);
   if (begin != end)
-    result << *begin++;
+    result << fixed << *begin++;
   while (begin != end)
-    result << separator << *begin++;
+    result << separator << fixed << *begin++;
   return result.str();
 }
 
