@@ -2,7 +2,8 @@
 #include <utility>
 
 using namespace std;
-pair<vector<double>, vector<double> > tie_mean(const vector<double>& x, const vector<double>& y);
+
+pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const vector<double>& y_);
 
 class SimpleInterpolation {
   bool constant_interpolation;

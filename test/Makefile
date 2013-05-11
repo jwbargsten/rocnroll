@@ -29,4 +29,4 @@ test_approx: $(OBJS) approx.test.o
 	./$@
 
 clean:
-	$(RM) -v *.o
+	$(RM) -v *.o *.cpp

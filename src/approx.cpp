@@ -1,5 +1,6 @@
 #include <limits>
 #include <vector>
+#include <iostream>
 #include <utility>
 #include <stdexcept>
 #include <algorithm>
@@ -28,12 +29,13 @@ SimpleInterpolation::SimpleInterpolation(const vector<double>& x_, const vector<
   if(rule_.first == 1)
     ylow = - std::numeric_limits<double>::infinity();
   else
-    ylow = y_.front();
+    ylow = y.front();
 
   if(rule_.second == 1)
     yhigh = std::numeric_limits<double>::infinity();
   else
-    yhigh = y_.back();
+    yhigh = y.back();
+
 }
 
 double SimpleInterpolation::interpolate(const double& v)
@@ -78,17 +80,14 @@ pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const v
   vector<double> x;
   vector<double> y;
 
-  vector<int> idcs = order(x);
-
-  cerr << "zzz" << endl;
-  for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it)
-    cerr << *it << endl;
+  vector<int> idcs = order(x_);
 
 
-  for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it) {
+  for(vector<int>::const_reverse_iterator it = idcs.rbegin(); it != idcs.rend(); ++it) {
     x.push_back(x_[*it]);
     y.push_back(y_[*it]);
   }
+
 
   vector<double> x_tie;
   vector<double> y_tie;
@@ -96,7 +95,7 @@ pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const v
   if(x.size() != y.size())
     throw std::runtime_error("size of x and y values are not equal");
 
-  double last_x;
+  double last_x = std::numeric_limits<double>::infinity();
   int current_tie_size = 0;
 
   vector<double>::const_iterator itx;

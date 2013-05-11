@@ -104,15 +104,26 @@ template <class MX, class MY>
 void Performance<MX, MY>::makeFinite()
 {
 
-  double max = *max_element(alpha_values.begin(), alpha_values.end());
+  double max = -std::numeric_limits<double>::infinity();
   double diff_mean = 0;
 
   vector<int> inf_idcs;
+
   int num_finite_idcs = 0;
-  for(int i = 1; i< alpha_values.size(); i++) {
+  int last_finite_idx = -1;
+
+  for(int i = 0; i< alpha_values.size(); i++) {
     if(is_finite(alpha_values[i])) {
-      diff_mean += abs(alpha_values[i] - alpha_values[i-1]);
-      num_finite_idcs++;
+
+      if(last_finite_idx >= 0) {
+        diff_mean += abs(alpha_values[i] - alpha_values[i-1]);
+        num_finite_idcs++;
+      }
+
+      last_finite_idx = i;
+
+      if(alpha_values[i] > max)
+        max = alpha_values[i];
     } else {
       inf_idcs.push_back(i);
     }
@@ -152,8 +163,8 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
 
   /* find the minimum, maximum and the longest sample of all alpha values */
 
-  double max = std::numeric_limits<double>::infinity();
-  double min = -std::numeric_limits<double>::infinity();
+  double max = -std::numeric_limits<double>::infinity();
+  double min = std::numeric_limits<double>::infinity();
   int cnt_longest = 0;
 
 
@@ -168,7 +179,9 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
     if(it->alpha_values.size() > cnt_longest)
       cnt_longest = it->alpha_values.size();
   }
+
   vector<double> alpha_values_avg = numseq(min, max, cnt_longest);
+  reverse(alpha_values_avg.begin(), alpha_values_avg.end());
 
   vector<double> x_values_avg(cnt_longest, 0);
   vector<double> y_values_avg(cnt_longest, 0);
@@ -186,7 +199,7 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
     if(it->alpha_values.size() < 2)
       continue;
 
-    //try {
+    try {
       SimpleInterpolation xapprox  = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2), false);
       SimpleInterpolation yapprox  = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2), false);
 
@@ -194,10 +207,9 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
         x_values_avg[i] += xapprox.interpolate(alpha_values_avg[i]);
         y_values_avg[i] += yapprox.interpolate(alpha_values_avg[i]);
       }
-    //} catch (std::runtime_error& e) {
-      //continue;
-    //}
-    cerr << ";";
+    } catch (std::runtime_error& e) {
+      continue;
+    }
   }
 
   vector<double>::const_iterator itx;

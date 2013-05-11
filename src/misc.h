@@ -12,7 +12,7 @@
 
 using namespace std;
 
-vector<int> order(vector<double>& d);
+vector<int> order(const vector<double>& d);
 vector<string> splitLine(string& line);
 vector<double> numseq(double min, double max, long length);
 
