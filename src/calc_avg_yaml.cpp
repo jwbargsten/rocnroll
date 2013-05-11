@@ -84,6 +84,8 @@ int main(int argc, char *argv[])
     perf_pr.compute();
     perfs_pr.push_back(perf_pr);
 
+    cerr << endl;
+
   }
   cerr << "roc avg" << endl;
   Performance<FPR, TPR> perf_roc_avg = averagePerformance<FPR, TPR>(perfs_roc);

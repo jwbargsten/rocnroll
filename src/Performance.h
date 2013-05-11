@@ -186,7 +186,7 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
     if(it->alpha_values.size() < 2)
       continue;
 
-    try {
+    //try {
       SimpleInterpolation xapprox  = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2), false);
       SimpleInterpolation yapprox  = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2), false);
 
@@ -194,9 +194,9 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
         x_values_avg[i] += xapprox.interpolate(alpha_values_avg[i]);
         y_values_avg[i] += yapprox.interpolate(alpha_values_avg[i]);
       }
-    } catch (std::runtime_error& e) {
-      continue;
-    }
+    //} catch (std::runtime_error& e) {
+      //continue;
+    //}
     cerr << ";";
   }
 

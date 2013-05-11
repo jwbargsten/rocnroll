@@ -4,7 +4,7 @@
 
 #include "misc.h"
 
-vector<int> order(vector<double>& d)
+vector<int> order(const vector<double>& d)
 {
   vector<pair<int, vector<double>::const_iterator> > idxPair(d.size());
   int n = 0;

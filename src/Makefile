@@ -18,7 +18,7 @@ calc_auc: $(OBJS) calc_auc.o
 calc_all_yaml: $(OBJS) calc_all_yaml.o
 	g++ $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-calc_avg_yaml: $(OBJS) calc_avg_yaml.o
+calc_avg_yaml: $(OBJS) calc_avg_yaml.o Performance.h
 	g++ $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 %.o: %.cpp

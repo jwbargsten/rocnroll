@@ -80,6 +80,11 @@ pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const v
 
   vector<int> idcs = order(x);
 
+  cerr << "zzz" << endl;
+  for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it)
+    cerr << *it << endl;
+
+
   for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it) {
     x.push_back(x_[*it]);
     y.push_back(y_[*it]);
