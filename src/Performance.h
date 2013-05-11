@@ -2,32 +2,38 @@
 #define ROCNROLL_PERFORMANCE_H
 
 #include <stdexcept>
+#include <algorithm>
+#include <vector>
+
 #include "Prediction.h"
 #include "Measure.h"
-#include <vector>
 #include "misc.h"
+#include "approx.h"
+#include "IPerformance.h"
 
 using namespace std;
 
 template <class MX, class MY>
-class Performance {
-  MX measure_x;
-  MY measure_y;
+class Performance : public IPerformance {
+    Prediction prediction;
+    MX measure_x;
+    MY measure_y;
 
-  Prediction prediction;
+  public:
+    vector<double> x_values;
+    vector<double> y_values;
 
+    vector<double> alpha_values;
+    string alpha_name;
 
-public:
-  vector<double> x_values;
-  vector<double> y_values;
+    Performance(const Prediction& prediction_) : measure_x(MX()), measure_y(MY()), prediction(prediction_) {}
+    Performance() : measure_x(MX()), measure_y(MY()) {}
+    Performance(const vector<double>& x_values_, const vector<double>& y_values_, const vector<double>& alpha_values_, const string& alpha_name_) : measure_x(MX()), measure_y(MY()), x_values(x_values_), y_values(y_values_), alpha_values(alpha_values_), alpha_name(alpha_name_) {}
 
-  vector<double> alpha_values;
-  string alpha_name;
-
-  Performance(const Prediction& prediction_) : measure_x(MX()), measure_y(MY()), prediction(prediction_) {}
-  void printYAML(const string& name, const string& indent);
-  void printYAML();
-  void compute();
+    virtual void compute();
+    virtual void makeFinite();
+    virtual void printYAML();
+    virtual void printYAML(const string& name, const string& indent);
 };
 
 
@@ -93,5 +99,110 @@ void Performance<MX, MY>::printYAML()
 {
   printYAML(string(), "");
 }
+
+template <class MX, class MY>
+void Performance<MX, MY>::makeFinite()
+{
+
+  double max = *max_element(alpha_values.begin(), alpha_values.end());
+  double diff_mean = 0;
+
+  vector<int> inf_idcs;
+  int num_finite_idcs = 0;
+  for(int i = 1; i< alpha_values.size(); i++) {
+    if(is_finite(alpha_values[i])) {
+      diff_mean += abs(alpha_values[i] - alpha_values[i-1]);
+      num_finite_idcs++;
+    } else {
+      inf_idcs.push_back(i);
+    }
+  }
+
+
+  double max_inf = max + (diff_mean/num_finite_idcs);
+
+  for(vector<int>::const_iterator it = inf_idcs.begin(); it != inf_idcs.end(); ++it)
+    alpha_values[*it] = max_inf;
+
+  vector<double> x_values_fin;
+  vector<double> y_values_fin;
+  vector<double> alpha_values_fin;
+
+  vector<double>::const_iterator itx = x_values.begin();
+  vector<double>::const_iterator ity = y_values.begin();
+  vector<double>::const_iterator ita = alpha_values.begin();
+
+  for(; itx != x_values.end(); ++itx, ++ity, ++ita) {
+    if(is_finite(*itx) && is_finite(*ity)) {
+      x_values_fin.push_back(*itx);
+      y_values_fin.push_back(*ity);
+      alpha_values_fin.push_back(*ita);
+    }
+  }
+  alpha_values = alpha_values_fin;
+  x_values = x_values_fin;
+  y_values = y_values_fin;
+
+  return;
+}
+
+template <class MX, class MY>
+Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
+{
+
+  /* find the minimum, maximum and the longest sample of all alpha values */
+
+  double max = std::numeric_limits<double>::infinity();
+  double min = -std::numeric_limits<double>::infinity();
+  int cnt_longest = 0;
+
+
+  for(typename vector<Performance<MX, MY> >::iterator it = perfs.begin(); it != perfs.end(); ++it) {
+    it->makeFinite();
+    double tmax = *max_element(it->alpha_values.begin(), it->alpha_values.end());
+    double tmin = *min_element(it->alpha_values.begin(), it->alpha_values.end());
+    if(tmax > max)
+      max = tmax;
+    if(tmin < min)
+      min = tmin;
+    if(it->alpha_values.size() > cnt_longest)
+      cnt_longest = it->alpha_values.size();
+  }
+  vector<double> alpha_values_avg = numseq(min, max, cnt_longest);
+
+  vector<double> x_values_avg(cnt_longest, 0);
+  vector<double> y_values_avg(cnt_longest, 0);
+
+  for(typename vector<Performance<MX, MY> >::iterator it = perfs.begin(); it != perfs.end(); ++it) {
+    /* interpolate new adjusted x-values with average alpha values */
+    /* SimpleInterpolation(
+     *  const vector<double>& x_,
+     *  const vector<double>& y_,
+     *  const double& f_,
+     *  const pair<int, int>& rule_,
+     *  const bool& constant_interpolation_
+     * )
+     */
+
+    SimpleInterpolation xapprox  = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2));
+    SimpleInterpolation yapprox  = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2));
+
+    for(int i = 0; i < cnt_longest; i++) {
+      x_values_avg += xapprox.interpolate(alpha_values_avg[i]);
+      y_values_avg += yapprox.interpolate(alpha_values_avg[i]);
+    }
+  }
+
+  vector<double>::const_iterator itx;
+  vector<double>::const_iterator ity;
+  for(int i = 0; i< alpha_values_avg.size(); i++) {
+    x_values_avg /= perfs.size();
+    y_values_avg /= perfs.size();
+  }
+
+  Performance<MX, MY> avg_perf(x_values_avg, y_values_avg, alpha_values_avg, "avgcutoff");
+  return avg_perf;
+}
+
 
 #endif
