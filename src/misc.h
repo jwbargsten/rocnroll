@@ -14,6 +14,7 @@ using namespace std;
 
 vector<int> order(vector<double>& d);
 vector<string> splitLine(string& line);
+vector<double> numseq(double min, double max, long length);
 
 class BadNumber : public std::runtime_error {
 public:

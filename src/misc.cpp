@@ -37,3 +37,22 @@ vector<string> splitLine(string& line)
   return result;
 }
 
+vector<double> numseq(double min, double max, long length)
+{
+  double range = max - min;
+  double step = range/length;
+
+  vector<double> seq;
+
+  if(length < 2)
+    throw std::runtime_error("sequence length too short");
+  if(max == min)
+    throw std::runtime_error("max & min are equal");
+
+  for(long i = 0; i< length-1; i++) {
+    seq.push_back(min + i * step);
+
+  }
+  seq.push_back(max);
+  return seq;
+}
