@@ -183,21 +183,28 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
      *  const bool& constant_interpolation_
      * )
      */
+    if(it->alpha_values.size() < 2)
+      continue;
 
-    SimpleInterpolation xapprox  = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2));
-    SimpleInterpolation yapprox  = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2));
+    try {
+      SimpleInterpolation xapprox  = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2), false);
+      SimpleInterpolation yapprox  = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2), false);
 
-    for(int i = 0; i < cnt_longest; i++) {
-      x_values_avg += xapprox.interpolate(alpha_values_avg[i]);
-      y_values_avg += yapprox.interpolate(alpha_values_avg[i]);
+      for(int i = 0; i < cnt_longest; i++) {
+        x_values_avg[i] += xapprox.interpolate(alpha_values_avg[i]);
+        y_values_avg[i] += yapprox.interpolate(alpha_values_avg[i]);
+      }
+    } catch (std::runtime_error& e) {
+      continue;
     }
+    cerr << ";";
   }
 
   vector<double>::const_iterator itx;
   vector<double>::const_iterator ity;
   for(int i = 0; i< alpha_values_avg.size(); i++) {
-    x_values_avg /= perfs.size();
-    y_values_avg /= perfs.size();
+    x_values_avg[i] /= perfs.size();
+    y_values_avg[i] /= perfs.size();
   }
 
   Performance<MX, MY> avg_perf(x_values_avg, y_values_avg, alpha_values_avg, "avgcutoff");
