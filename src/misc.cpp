@@ -40,7 +40,7 @@ vector<string> splitLine(string& line)
 vector<double> numseq(double min, double max, long length)
 {
   double range = max - min;
-  double step = range/length;
+  double step = range/(length-1);
 
   vector<double> seq;
 
@@ -49,7 +49,8 @@ vector<double> numseq(double min, double max, long length)
   if(max == min)
     throw std::runtime_error("max & min are equal");
 
-  for(long i = 0; i< length-1; i++) {
+  seq.push_back(min);
+  for(long i = 1; i< length-1; i++) {
     seq.push_back(min + i * step);
 
   }

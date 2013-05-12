@@ -27,6 +27,9 @@ test_measure: $(OBJS) measure.test.o
 test_approx: $(OBJS) approx.test.o
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 	./$@
+test_misc: $(OBJS) misc.test.o
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	./$@
 
 clean:
 	$(RM) -v *.o *.cpp

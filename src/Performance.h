@@ -208,6 +208,7 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
         y_values_avg[i] += yapprox.interpolate(alpha_values_avg[i]);
       }
     } catch (std::runtime_error& e) {
+      cerr << "INTERPOLATION ERROR, SKIPPING GROUP" << endl;
       continue;
     }
   }
