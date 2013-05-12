@@ -186,6 +186,7 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
   vector<double> x_values_avg(cnt_longest, 0);
   vector<double> y_values_avg(cnt_longest, 0);
 
+  int cnt_valid_perfs = 0;
   for(typename vector<Performance<MX, MY> >::iterator it = perfs.begin(); it != perfs.end(); ++it) {
     /* interpolate new adjusted x-values with average alpha values */
     /* SimpleInterpolation(
@@ -200,24 +201,23 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
       continue;
 
     try {
-      SimpleInterpolation xapprox  = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2), false);
-      SimpleInterpolation yapprox  = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2), false);
+      SimpleInterpolation xapprox = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2), false);
+      SimpleInterpolation yapprox = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2), false);
 
       for(int i = 0; i < cnt_longest; i++) {
         x_values_avg[i] += xapprox.interpolate(alpha_values_avg[i]);
         y_values_avg[i] += yapprox.interpolate(alpha_values_avg[i]);
       }
+      cnt_valid_perfs++;
     } catch (std::runtime_error& e) {
       cerr << "Warning: " << e.what() << ", skipping group" << endl;
       continue;
     }
   }
 
-  vector<double>::const_iterator itx;
-  vector<double>::const_iterator ity;
   for(int i = 0; i< alpha_values_avg.size(); i++) {
-    x_values_avg[i] /= perfs.size();
-    y_values_avg[i] /= perfs.size();
+    x_values_avg[i] /= cnt_valid_perfs;
+    y_values_avg[i] /= cnt_valid_perfs;
   }
 
   Performance<MX, MY> avg_perf(x_values_avg, y_values_avg, alpha_values_avg, "avgcutoff");
