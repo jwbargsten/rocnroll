@@ -8,11 +8,13 @@
 #include <sstream>
 #include <unordered_map>
 #include <algorithm>
+#include <memory>
 
 #include <getopt.h>
 
 #include "Performance.h"
 #include "PerformanceMeasure.h"
+#include "misc.h"
 
 namespace PerfM = PerformanceMeasure;
 
@@ -40,26 +42,10 @@ int main(int argc, char *argv[])
 
 
   std::cout.precision(15);
-  unordered_map<string, pair<vector<double>, vector<int>>> data;
 
   cerr << "reading in " << argv[optind] << endl;
-  ifstream in(argv[optind]);
-
-  if(!in || in.bad()) {
-      cerr << "Supply the right arguments, you idiot! " << argv[0]  << " [FILENAME]" << endl;
-      exit(1);
-  }
-
-  vector<string> row;
-  for (string line; getline(in, line, '\n');) {
-    /* skip empty lines */
-    if(line.length() == 0)
-      continue;
-
-    row = splitLine(line);
-    data[row[0]].first.push_back(convertToDouble(row[1]));
-    data[row[0]].second.push_back(convertToInt(row[2]));
-  }
+  string file(argv[optind]);
+  unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > > data = readData(file);
 
   /* calc cutoff/fp/tp for every cv */
 
@@ -69,13 +55,13 @@ int main(int argc, char *argv[])
   vector<Performance<PerfM::FPR, PerfM::TPR> > perfs_roc;
   vector<Performance<PerfM::TPR, PerfM::PPV> > perfs_pr;
   /* iterate over x-validations */
-  unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
+  unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > >::const_iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
     cerr << it->first << endl;
     /* first is the name of the group */
     /* second -> the label-prediction pair 2nd second -> the label */
-    Prediction unroc(it->second.first, it->second.second);
-    unroc.compute();
+    shared_ptr<Prediction> unroc(new Prediction(it->second.first, it->second.second));
+    unroc->compute();
 
     Performance<PerfM::FPR, PerfM::TPR> perf_roc(unroc);
     perf_roc.compute();

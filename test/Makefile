@@ -23,15 +23,15 @@ all: test_measure test_approx
 	$(CXX) $(CXXFLAGS) -c $<
 
 test_measure: $(OBJS) measure.test.o $(DEPS)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 	./$@
 
 test_approx: $(OBJS) approx.test.o $(DEPS)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 	./$@
 
 test_misc: $(OBJS) misc.test.o $(DEPS)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 	./$@
 
 clean:

@@ -16,7 +16,7 @@ using namespace std;
 
 template <class MX, class MY>
 class Performance : public IPerformance {
-    Prediction prediction;
+    shared_ptr<Prediction> prediction;
     MX measure_x;
     MY measure_y;
 
@@ -27,7 +27,7 @@ class Performance : public IPerformance {
     vector<double> alpha_values;
     string alpha_name;
 
-    Performance(const Prediction& prediction_) : measure_x(MX()), measure_y(MY()), prediction(prediction_) {}
+    Performance(const shared_ptr<Prediction>& prediction_) : measure_x(MX()), measure_y(MY()), prediction(prediction_) {}
     Performance() : measure_x(MX()), measure_y(MY()) {}
     Performance(const vector<double>& x_values_, const vector<double>& y_values_, const vector<double>& alpha_values_, const string& alpha_name_) : measure_x(MX()), measure_y(MY()), x_values(x_values_), y_values(y_values_), alpha_values(alpha_values_), alpha_name(alpha_name_) {}
 
@@ -47,30 +47,30 @@ void Performance<MX, MY>::compute()
   alpha_values.clear();
 
   x_values = measure_x.compute(
-      prediction.num_uniq_pred,
-      prediction.num_neg,
-      prediction.num_pos,
-      prediction.cutoffs,
-      prediction.fp,
-      prediction.tp,
-      prediction.fn,
-      prediction.tn
+      prediction->num_uniq_pred,
+      prediction->num_neg,
+      prediction->num_pos,
+      prediction->cutoffs,
+      prediction->fp,
+      prediction->tp,
+      prediction->fn,
+      prediction->tn
     );
 
   y_values = measure_y.compute(
-      prediction.num_uniq_pred,
-      prediction.num_neg,
-      prediction.num_pos,
-      prediction.cutoffs,
-      prediction.fp,
-      prediction.tp,
-      prediction.fn,
-      prediction.tn
+      prediction->num_uniq_pred,
+      prediction->num_neg,
+      prediction->num_pos,
+      prediction->cutoffs,
+      prediction->fp,
+      prediction->tp,
+      prediction->fn,
+      prediction->tn
     );
 
   /* set alpha values to cutoff if we have fitting measures */
-  if(x_values.size() == y_values.size() && x_values.size() == prediction.num_uniq_pred) {
-    alpha_values = prediction.cutoffs;
+  if(x_values.size() == y_values.size() && x_values.size() == prediction->num_uniq_pred) {
+    alpha_values = prediction->cutoffs;
     alpha_name = "cutoff";
   } else {
     alpha_name = "none";

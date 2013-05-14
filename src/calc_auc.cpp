@@ -6,9 +6,11 @@
 #include <sstream>
 #include <unordered_map>
 #include <algorithm>
+#include <memory>
 
 #include "Performance.h"
 #include "PerformanceMeasure.h"
+#include "misc.h"
 
 namespace PerfM = PerformanceMeasure;
 
@@ -29,24 +31,9 @@ int main(int argc, char *argv[])
 
   int optind = 1;
   cerr << "reading in " << argv[optind] << endl;
-  ifstream in(argv[optind]);
+  string file(argv[optind]);
 
-  if(!in || in.bad()) {
-      cerr << "Supply the right arguments, you idiot! " << argv[0]  << " [FILENAME]" << endl;
-      exit(1);
-  }
-
-  unordered_map<string, pair<vector<double>, vector<int> > > data;
-  vector<string> row;
-  for (string line; getline(in, line, '\n');) {
-    /* skip empty lines */
-    if(line.length() == 0)
-      continue;
-
-    row = splitLine(line);
-    data[row[0]].first.push_back(convertToDouble(row[1]));
-    data[row[0]].second.push_back(convertToInt(row[2]));
-  }
+  unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > > data = readData(file);
 
   /* calc cutoff/fp/tp for every cv */
 
@@ -57,13 +44,13 @@ int main(int argc, char *argv[])
   cout << "group\tn_pred\tn_uniq_pred\tn_neg\tn_pos\tn_pred_zero\tn_pred_one\taucroc\taucpr\tfmax" << endl;
 
   /* iterate over x-validations */
-  unordered_map<string, pair<vector<double>, vector<int>>>::const_iterator it;
+  unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > >::const_iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
     cerr << it->first << ": ";
     /* first is the name of the group */
     /* second -> the label-prediction pair 2nd second -> the label */
-    Prediction unroc(it->second.first, it->second.second);
-    unroc.compute();
+    shared_ptr<Prediction> unroc(new Prediction(it->second.first, it->second.second));
+    unroc->compute();
 
     Performance<PerfM::None, PerfM::AUCROC> perf_aucroc(unroc);
     perf_aucroc.compute();
@@ -77,17 +64,17 @@ int main(int argc, char *argv[])
     cerr << endl;
     cout << it->first
       << "\t" 
-      << unroc.num_pred
+      << unroc->num_pred
       << "\t" 
-      << unroc.num_uniq_pred
+      << unroc->num_uniq_pred
       << "\t" 
-      << unroc.num_neg
+      << unroc->num_neg
       << "\t" 
-      << unroc.num_pos
+      << unroc->num_pos
       << "\t" 
-      << unroc.num_pred_zero
+      << unroc->num_pred_zero
       << "\t" 
-      << unroc.num_pred_one
+      << unroc->num_pred_one
       << "\t" 
       << perf_aucroc.y_values.front() 
       << "\t" 

@@ -1,10 +1,15 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <unordered_map>
+#include <memory>
 
 #include "misc.h"
 
-vector<int> order(const vector<double>& d)
+vector<int>
+order(const vector<double>& d)
 {
   vector<pair<int, vector<double>::const_iterator> > idxPair(d.size());
   int n = 0;
@@ -23,7 +28,8 @@ vector<int> order(const vector<double>& d)
   return(idx);
 }
 
-vector<string> splitLine(string& line)
+vector<string> 
+splitLine(string& line)
 {
   vector<string>   result;
 
@@ -37,7 +43,8 @@ vector<string> splitLine(string& line)
   return result;
 }
 
-vector<double> numseq(double min, double max, long length)
+vector<double> 
+numseq(double min, double max, long length)
 {
   double range = max - min;
   double step = range/(length-1);
@@ -56,4 +63,38 @@ vector<double> numseq(double min, double max, long length)
   }
   seq.push_back(max);
   return seq;
+}
+
+unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > >
+readData(const string& file)
+{
+  ifstream in(file);
+
+  if(!in || in.bad())
+      throw std::runtime_error("Supply the right arguments, you idiot! " + file + " [FILENAME]");
+
+  unordered_map<string, pair<shared_ptr< vector<double> >, shared_ptr<vector<int> > > > data;
+
+  vector<string> row;
+  for (string line; getline(in, line, '\n');) {
+    /* skip empty lines */
+    if(line.length() == 0)
+      continue;
+
+    row = splitLine(line);
+
+    if(!data[row[0]].first) {
+      shared_ptr< vector<double> > v(new vector<double>);
+      data[row[0]].first = v;
+    }
+
+    if(!data[row[0]].second) {
+      shared_ptr<vector<int> > v(new vector<int>);
+      data[row[0]].second = v;
+    }
+
+    data[row[0]].first->push_back(convertToDouble(row[1]));
+    data[row[0]].second->push_back(convertToInt(row[2]));
+  }
+  return data;
 }

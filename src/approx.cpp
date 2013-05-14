@@ -9,7 +9,7 @@
 
 
 SimpleInterpolation::SimpleInterpolation(const vector<double>& x_, const vector<double>& y_, const double& f_, const pair<int, int>& rule_, const bool& constant_interpolation_)
-  : x(x_), y(y_), constant_interpolation(constant_interpolation_)
+  : constant_interpolation(constant_interpolation_)
 {
 
   if(x_.size() != y_.size())
@@ -75,7 +75,8 @@ double SimpleInterpolation::interpolate(const double& v)
     return y[i] * f1 + y[j] * f2;
 }/* approx1() */
 
-pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const vector<double>& y_)
+pair<vector<double>, vector<double> >
+tie_mean(const vector<double>& x_, const vector<double>& y_)
 {
   vector<double> x;
   vector<double> y;
