@@ -52,6 +52,9 @@ int main(int argc, char *argv[])
   /* computed measures (not necessary, output goes to stdout) */
   //unordered_map<string, Prediction> rocdata;
 
+  /* set header */
+  cout << "group\tn_pred\tn_uniq_pred\tn_neg\tn_pos\taucroc\taucpr\tfmax" << endl;
+
   /* iterate over x-validations */
   unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
@@ -61,10 +64,32 @@ int main(int argc, char *argv[])
     Prediction unroc(it->second.first, it->second.second);
     unroc.compute();
 
-    Performance<None, AUCROC> perf_auc(unroc);
-    perf_auc.compute();
+    Performance<None, AUCROC> perf_aucroc(unroc);
+    perf_aucroc.compute();
+
+    Performance<None, AUCPR> perf_aucpr(unroc);
+    perf_aucpr.compute();
+
+    Performance<None, FMAX> perf_fmax(unroc);
+    perf_fmax.compute();
+
     cerr << endl;
-    cout << it->first << "\t" << perf_auc.y_values.front() << endl;
+    cout << it->first
+      << "\t" 
+      << unroc.num_pred
+      << "\t" 
+      << unroc.num_uniq_pred
+      << "\t" 
+      << unroc.num_neg
+      << "\t" 
+      << unroc.num_pos
+      << "\t" 
+      << perf_aucroc.y_values.front() 
+      << "\t" 
+      << perf_aucpr.y_values.front()
+      << "\t" 
+      << perf_fmax.y_values.front()
+      << endl;
   }
 
 }

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <algorithm>
 #include "misc.h"
 
 using namespace std;
@@ -147,8 +148,8 @@ class AUCPR {
 
       double auc = 0;
 
-      double last_y = (double) tp[0]/(fp[0]+tp[0]);
       double last_x = (double) tp[0]/num_pos;
+      double last_y = (double) tp[0]/(fp[0]+tp[0]);
 
       if(std::isnan(last_x))
         last_x = 0;
@@ -156,14 +157,14 @@ class AUCPR {
         last_y = 0;
 
       for(int i=1; i < n; i++) { 
-        double x = (double) fp[i]/num_neg;
+        double x = (double) tp[i]/num_pos;
 
         if(std::isnan(x))
           x = 0;
         if(!is_finite<double>(x))
           continue;
 
-        double y = (double) tp[i]/num_pos;
+        double y = (double) tp[i]/(fp[i]+tp[i]);
 
         if(std::isnan(y))
           y = 0;
@@ -230,6 +231,62 @@ class AUCROC {
         //throw BadNumber(name() + "-measure: non-finite number: " + std::to_string(auc) );
       res.push_back(auc);
 
+      return res;
+    }
+};
+
+class FSCORE {
+  public:
+    static std::string name() { return "f"; }
+    double alpha;
+    FSCORE() : alpha(0.5) {}
+    inline vector<double> compute(
+       const int& n,
+       const int& num_neg, 
+       const int& num_pos,
+       const vector<double>& cutoffs,
+       const vector<int>& fp,
+       const vector<int>& tp,
+       const vector<int>& fn,
+       const vector<int>& tn)
+    {
+      vector<double> res;
+
+      for(int i=0; i < n; i++) { 
+        double ppv = (double)tp[i]/(fp[i]+tp[i]);
+        double tpr = (double)tp[i]/num_pos;
+
+        double f = 1/(alpha*(1/ppv) + (1-alpha)*(1/tpr));
+
+        res.push_back(f);
+      }
+
+      return res;
+    }
+};
+
+class FMAX {
+  public:
+    static std::string name() { return "fmax"; }
+    inline vector<double> compute(
+       const int& n,
+       const int& num_neg, 
+       const int& num_pos,
+       const vector<double>& cutoffs,
+       const vector<int>& fp,
+       const vector<int>& tp,
+       const vector<int>& fn,
+       const vector<int>& tn)
+    {
+      vector<double> res;
+      FSCORE fcmp;
+      vector<double> f = fcmp.compute(n, num_neg, num_pos, cutoffs, fp, tp, fn, tn);
+      double max = 0;
+      for(vector<double>::const_iterator it = f.begin(); it != f.end(); ++it)
+        if(is_finite(*it) && *it > max)
+          max = *it;
+
+      res.push_back(max);
       return res;
     }
 };
