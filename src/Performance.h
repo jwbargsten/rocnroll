@@ -5,8 +5,9 @@
 #include <algorithm>
 #include <vector>
 
+#include <cmath>
+
 #include "Prediction.h"
-#include "Measure.h"
 #include "misc.h"
 #include "approx.h"
 #include "IPerformance.h"

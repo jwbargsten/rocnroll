@@ -9,11 +9,13 @@
 #include <unordered_map>
 #include <algorithm>
 
-#include "Measure.h"
-#include "IPerformance.h"
+#include <getopt.h>
+
+#include "PerformanceMeasure.h"
 #include "Performance.h"
 
-#include <getopt.h>
+
+namespace PerfM = PerformanceMeasure;
 
 using namespace std;
 
@@ -78,19 +80,19 @@ int main(int argc, char *argv[])
     cout << "pred:" << endl;
     unroc.printYAML(it->first, isSlim, " ");
 
-    Performance<FPR, TPR> perf_roc(unroc);
+    Performance<PerfM::FPR, PerfM::TPR> perf_roc(unroc);
     perf_roc.compute();
 
     cout << "perf_roc:" << endl;
     perf_roc.printYAML(it->first, " ");
 
-    Performance<None, AUCROC> perf_auc(unroc);
+    Performance<PerfM::None, PerfM::AUCROC> perf_auc(unroc);
     perf_auc.compute();
 
     cout << "perf_auc:" << endl;
     perf_auc.printYAML(it->first, " ");
 
-    Performance<TPR, PPV> perf_pr(unroc);
+    Performance<PerfM::TPR, PerfM::PPV> perf_pr(unroc);
     perf_pr.compute();
 
     cout << "perf_pr:" << endl;

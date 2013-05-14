@@ -9,11 +9,12 @@
 #include <unordered_map>
 #include <algorithm>
 
-#include "Measure.h"
-#include "IPerformance.h"
-#include "Performance.h"
-
 #include <getopt.h>
+
+#include "Performance.h"
+#include "PerformanceMeasure.h"
+
+namespace PerfM = PerformanceMeasure;
 
 using namespace std;
 
@@ -65,8 +66,8 @@ int main(int argc, char *argv[])
   /* computed measures (not necessary, output goes to stdout) */
   //unordered_map<string, Prediction> rocdata;
 
-  vector<Performance<FPR, TPR> > perfs_roc;
-  vector<Performance<TPR, PPV> > perfs_pr;
+  vector<Performance<PerfM::FPR, PerfM::TPR> > perfs_roc;
+  vector<Performance<PerfM::TPR, PerfM::PPV> > perfs_pr;
   /* iterate over x-validations */
   unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
@@ -76,11 +77,11 @@ int main(int argc, char *argv[])
     Prediction unroc(it->second.first, it->second.second);
     unroc.compute();
 
-    Performance<FPR, TPR> perf_roc(unroc);
+    Performance<PerfM::FPR, PerfM::TPR> perf_roc(unroc);
     perf_roc.compute();
     perfs_roc.push_back(perf_roc);
 
-    Performance<TPR, PPV> perf_pr(unroc);
+    Performance<PerfM::TPR, PerfM::PPV> perf_pr(unroc);
     perf_pr.compute();
     perfs_pr.push_back(perf_pr);
 
@@ -88,13 +89,13 @@ int main(int argc, char *argv[])
 
   }
   cerr << "roc avg" << endl;
-  Performance<FPR, TPR> perf_roc_avg = averagePerformance<FPR, TPR>(perfs_roc);
+  Performance<PerfM::FPR, PerfM::TPR> perf_roc_avg = averagePerformance<PerfM::FPR, PerfM::TPR>(perfs_roc);
     cout << "---" << endl;
     cout << "perf_roc:" << endl;
     perf_roc_avg.printYAML("threshold_avg", " ");
 
   cerr << "pr avg" << endl;
-  Performance<TPR, PPV> perf_pr_avg = averagePerformance<TPR, PPV>(perfs_pr);
+  Performance<PerfM::TPR, PerfM::PPV> perf_pr_avg = averagePerformance<PerfM::TPR, PerfM::PPV>(perfs_pr);
     cout << "perf_pr:" << endl;
     perf_pr_avg.printYAML("theshold_avg", " ");
     cerr << endl;

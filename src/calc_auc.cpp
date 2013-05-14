@@ -7,9 +7,10 @@
 #include <unordered_map>
 #include <algorithm>
 
-#include "Measure.h"
 #include "Performance.h"
+#include "PerformanceMeasure.h"
 
+namespace PerfM = PerformanceMeasure;
 
 using namespace std;
 
@@ -64,13 +65,13 @@ int main(int argc, char *argv[])
     Prediction unroc(it->second.first, it->second.second);
     unroc.compute();
 
-    Performance<None, AUCROC> perf_aucroc(unroc);
+    Performance<PerfM::None, PerfM::AUCROC> perf_aucroc(unroc);
     perf_aucroc.compute();
 
-    Performance<None, AUCPR> perf_aucpr(unroc);
+    Performance<PerfM::None, PerfM::AUCPR> perf_aucpr(unroc);
     perf_aucpr.compute();
 
-    Performance<None, FMAX> perf_fmax(unroc);
+    Performance<PerfM::None, PerfM::FMAX> perf_fmax(unroc);
     perf_fmax.compute();
 
     cerr << endl;
@@ -93,4 +94,3 @@ int main(int argc, char *argv[])
   }
 
 }
-

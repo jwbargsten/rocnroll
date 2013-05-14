@@ -7,8 +7,12 @@
 #include "../src/misc.h"
 #include "../src/Prediction.h"
 #include "../src/Performance.h"
+#include "../src/PerformanceMeasure.h"
 
 #define DELTA 0.000001
+
+namespace PerfM = PerformanceMeasure;
+
 class AverageTest : public CxxTest::TestSuite
 {
   public:
@@ -40,7 +44,7 @@ class AverageTest : public CxxTest::TestSuite
 
       Prediction pred(p, l);
       pred.compute();
-      Performance<None, AUCROC> perf(pred);
+      Performance<PerfM::None, PerfM::AUCROC> perf(pred);
       perf.compute();
       TS_ASSERT_DELTA(perf.y_values.front(), 0.9534701, DELTA);
   }
@@ -72,7 +76,7 @@ class AverageTest : public CxxTest::TestSuite
 
     Prediction pred(p, l);
     pred.compute();
-    Performance<TPR, FPR> perf(pred);
+    Performance<PerfM::TPR, PerfM::FPR> perf(pred);
     perf.compute();
 
     ifstream in_ref("data/rocr.xval.1cv.ref.tsv");
