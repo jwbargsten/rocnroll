@@ -1,12 +1,11 @@
 #include <limits>
 #include <stdexcept>
-#include <memory>
 
 #include "Prediction.h"
 #include "misc.h"
 
-Prediction::Prediction(const std::shared_ptr< vector<double> >& p_, const std::shared_ptr< vector<int> >& l_) :
-p(p_), l(l_)
+Prediction::Prediction(const vector<double>& p_, const vector<int>& l_) :
+  p(p_), l(l_)
 {}
 
 Prediction::Prediction()
@@ -18,17 +17,17 @@ void Prediction::compute()
     num_pos = 0;
     num_neg = 0;
 
-    for(vector<int>::const_iterator it = l->begin(); it != l->end(); ++it) {
+    for(vector<int>::const_iterator it = l.begin(); it != l.end(); ++it) {
       if(*it > 0)
         num_pos++;
       else
         num_neg++;
     }
 
-    idcs = order(*p);
+    idcs = order(p);
 
-    if(idcs.size() != p->size()) {
-      cerr << "not equal " << idcs.size() << " - " << p->size() << endl;
+    if(idcs.size() != p.size()) {
+      cerr << "not equal " << idcs.size() << " - " << p.size() << endl;
       exit(1);
     }
 
@@ -65,20 +64,20 @@ void Prediction::compute()
       num_pred++;
       /* skip duplicates */
 
-      fp_tmp += -1 * ((*l)[*it] - 1);
-      tp_tmp += (*l)[*it];
-      if(it + 1 != idcs.end() && (*p)[*it] == (*p)[*(it+1)]) {
+      fp_tmp += -1 * (l[*it] - 1);
+      tp_tmp += l[*it];
+      if(it + 1 != idcs.end() && p[*it] == p[*(it+1)]) {
         continue;
       }
 
       num_uniq_pred++;
 
-      if((*p)[*it] == 0)
+      if(p[*it] == 0)
         num_pred_zero++;
-      if((*p)[*it] == 1)
+      if(p[*it] == 1)
         num_pred_one++;
 
-      cutoffs.push_back((*p)[*it]);
+      cutoffs.push_back(p[*it]);
 
       /* invert: 0 -> 1, 1 -> 0 */
       fp.push_back(fp.back() + fp_tmp);
@@ -95,7 +94,7 @@ void Prediction::compute()
 
     }
     cerr << num_uniq_pred << "/" << num_pred;
-    if(num_pred != p->size())
+    if(num_pred != p.size())
       throw std::runtime_error("ERROR number of total predictions do not fit");
     if(num_uniq_pred != cutoffs.size() ||  num_uniq_pred != fp.size())
       throw std::runtime_error("ERROR number of unique predictions do not fit");
@@ -110,9 +109,9 @@ void Prediction::printYAML(const string& name, bool slim, const string& indent)
   if(!name.empty())
     cout << indent << "_name: \"" << name << "\"" << endl;
   if(!slim) {
-    cout << indent << "l: [" << join<vector<int>::const_iterator>(l->begin(), l->end(), ", ") << "]" << endl;
+    cout << indent << "l: [" << join<vector<int>::const_iterator>(l.begin(), l.end(), ", ") << "]" << endl;
 
-    cout << indent << "p: [" << join<vector<double>::const_iterator>(p->begin(), p->end(), ", ") << "]" << endl;
+    cout << indent << "p: [" << join<vector<double>::const_iterator>(p.begin(), p.end(), ", ") << "]" << endl;
     //not necessary
     //cout << "  \"idx\":[" << join<vector<int>::const_iterator>(idcs.begin(), idcs.end(), "\n" + indent + " - ") << "]," << endl;
   }

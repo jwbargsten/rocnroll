@@ -9,15 +9,14 @@
 #include <iterator>
 #include <sstream>
 #include <algorithm>
-#include <memory>
 
 using namespace std;
 
 class Prediction {
 
   public:
-    std::shared_ptr< vector<double> > p;
-    std::shared_ptr< vector<int> > l;
+    vector<double> p;
+    vector<int> l;
 
     vector<int> idcs;
 
@@ -41,7 +40,7 @@ class Prediction {
     vector<double> cutoffs;
 
     Prediction();
-    Prediction(const shared_ptr< vector<double> >&, const shared_ptr< vector<int> >&);
+    Prediction(const vector<double>&, const vector<int>&);
 
     void compute();
     void printYAML(const string&, bool, const string&);

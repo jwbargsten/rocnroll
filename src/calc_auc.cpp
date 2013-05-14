@@ -6,7 +6,6 @@
 #include <sstream>
 #include <unordered_map>
 #include <algorithm>
-#include <memory>
 
 #include "Performance.h"
 #include "PerformanceMeasure.h"
@@ -33,7 +32,7 @@ int main(int argc, char *argv[])
   cerr << "reading in " << argv[optind] << endl;
   string file(argv[optind]);
 
-  unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > > data = readData(file);
+  unordered_map<string, pair<vector<double>, vector<int> > > data = readData(file);
 
   /* calc cutoff/fp/tp for every cv */
 
@@ -44,13 +43,13 @@ int main(int argc, char *argv[])
   cout << "group\tn_pred\tn_uniq_pred\tn_neg\tn_pos\tn_pred_zero\tn_pred_one\taucroc\taucpr\tfmax" << endl;
 
   /* iterate over x-validations */
-  unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > >::const_iterator it;
+  unordered_map<string, pair<vector<double>, vector<int>>>::const_iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
     cerr << it->first << ": ";
     /* first is the name of the group */
     /* second -> the label-prediction pair 2nd second -> the label */
-    shared_ptr<Prediction> unroc(new Prediction(it->second.first, it->second.second));
-    unroc->compute();
+    Prediction unroc(it->second.first, it->second.second);
+    unroc.compute();
 
     Performance<PerfM::None, PerfM::AUCROC> perf_aucroc(unroc);
     perf_aucroc.compute();
@@ -64,17 +63,17 @@ int main(int argc, char *argv[])
     cerr << endl;
     cout << it->first
       << "\t" 
-      << unroc->num_pred
+      << unroc.num_pred
       << "\t" 
-      << unroc->num_uniq_pred
+      << unroc.num_uniq_pred
       << "\t" 
-      << unroc->num_neg
+      << unroc.num_neg
       << "\t" 
-      << unroc->num_pos
+      << unroc.num_pos
       << "\t" 
-      << unroc->num_pred_zero
+      << unroc.num_pred_zero
       << "\t" 
-      << unroc->num_pred_one
+      << unroc.num_pred_one
       << "\t" 
       << perf_aucroc.y_values.front() 
       << "\t" 

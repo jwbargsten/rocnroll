@@ -10,7 +10,6 @@
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
-#include <memory>
 
 using namespace std;
 
@@ -23,8 +22,8 @@ splitLine(string& line);
 vector<double>
 numseq(double min, double max, long length);
 
-unordered_map<string, pair<shared_ptr<vector<double> >, shared_ptr<vector<int> > > > readData
-(const string& file);
+unordered_map<string, pair<vector<double>, vector<int> > >
+readData(const string& file);
 
 class BadNumber : public std::runtime_error {
 public:

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
-#include <memory>
 
 #include "misc.h"
 
@@ -65,7 +64,7 @@ numseq(double min, double max, long length)
   return seq;
 }
 
-unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > >
+unordered_map<string, pair<vector<double>, vector<int> > >
 readData(const string& file)
 {
   ifstream in(file);
@@ -73,7 +72,7 @@ readData(const string& file)
   if(!in || in.bad())
       throw std::runtime_error("Supply the right arguments, you idiot! " + file + " [FILENAME]");
 
-  unordered_map<string, pair<shared_ptr< vector<double> >, shared_ptr<vector<int> > > > data;
+  unordered_map<string, pair<vector<double>, vector<int> > > data;
 
   vector<string> row;
   for (string line; getline(in, line, '\n');) {
@@ -83,18 +82,8 @@ readData(const string& file)
 
     row = splitLine(line);
 
-    if(!data[row[0]].first) {
-      shared_ptr< vector<double> > v(new vector<double>);
-      data[row[0]].first = v;
-    }
-
-    if(!data[row[0]].second) {
-      shared_ptr<vector<int> > v(new vector<int>);
-      data[row[0]].second = v;
-    }
-
-    data[row[0]].first->push_back(convertToDouble(row[1]));
-    data[row[0]].second->push_back(convertToInt(row[2]));
+    data[row[0]].first.push_back(convertToDouble(row[1]));
+    data[row[0]].second.push_back(convertToInt(row[2]));
   }
   return data;
 }

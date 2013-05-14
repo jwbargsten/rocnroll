@@ -8,7 +8,6 @@
 #include <sstream>
 #include <unordered_map>
 #include <algorithm>
-#include <memory>
 
 #include <getopt.h>
 
@@ -45,7 +44,7 @@ int main(int argc, char *argv[])
 
   cerr << "reading in " << argv[optind] << endl;
   string file(argv[optind]);
-  unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > > data = readData(file);
+  unordered_map<string, pair<vector<double>, vector<int> > > data = readData(file);
 
   /* calc cutoff/fp/tp for every cv */
 
@@ -55,13 +54,13 @@ int main(int argc, char *argv[])
   vector<Performance<PerfM::FPR, PerfM::TPR> > perfs_roc;
   vector<Performance<PerfM::TPR, PerfM::PPV> > perfs_pr;
   /* iterate over x-validations */
-  unordered_map<string, pair<shared_ptr<vector<double>>, shared_ptr<vector<int> > > >::const_iterator it;
+  unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
     cerr << it->first << endl;
     /* first is the name of the group */
     /* second -> the label-prediction pair 2nd second -> the label */
-    shared_ptr<Prediction> unroc(new Prediction(it->second.first, it->second.second));
-    unroc->compute();
+    Prediction unroc(it->second.first, it->second.second);
+    unroc.compute();
 
     Performance<PerfM::FPR, PerfM::TPR> perf_roc(unroc);
     perf_roc.compute();

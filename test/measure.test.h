@@ -2,7 +2,6 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <memory>
 
 #include <cxxtest/TestSuite.h>
 #include "../src/misc.h"
@@ -30,16 +29,16 @@ class MeasureTest : public CxxTest::TestSuite
       ifstream in("data/rocr.xval.1cv.tsv");
       TS_ASSERT(in && !in.bad());
 
-      std::shared_ptr<vector<double> > p(new vector<double>);
-      std::shared_ptr<vector<int> > l(new vector<int>);
+      vector<double> p;
+      vector<int> l;
       for (string line; getline(in, line, '\n');) {
         /* skip empty lines */
         if(line.length() == 0)
           continue;
 
         vector<string> row = splitLine(line);
-        p->push_back(convertToDouble(row[0]));
-        l->push_back(convertToInt(row[1]));
+        p.push_back(convertToDouble(row[0]));
+        l.push_back(convertToInt(row[1]));
       }
 
       Prediction pred(p, l);
@@ -62,17 +61,16 @@ class MeasureTest : public CxxTest::TestSuite
     ifstream in("data/rocr.xval.1cv.tsv");
     TS_ASSERT(in && !in.bad());
 
-
-    std::shared_ptr<vector<double> > p(new vector<double>);
-    std::shared_ptr<vector<int> > l(new vector<int>);
+    vector<double> p;
+    vector<int> l;
     for (string line; getline(in, line, '\n');) {
       /* skip empty lines */
       if(line.length() == 0)
         continue;
 
       vector<string> row = splitLine(line);
-      p->push_back(convertToDouble(row[0]));
-      l->push_back(convertToInt(row[1]));
+      p.push_back(convertToDouble(row[0]));
+      l.push_back(convertToInt(row[1]));
     }
 
     Prediction pred(p, l);
