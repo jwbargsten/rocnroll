@@ -8,7 +8,12 @@
 #include "approx.h"
 
 
-SimpleInterpolation::SimpleInterpolation(const vector<double>& x_, const vector<double>& y_, const double& f_, const pair<int, int>& rule_, const bool& constant_interpolation_)
+SimpleInterpolation::SimpleInterpolation(
+    const vector<double>& x_,
+    const vector<double>& y_,
+    const double& f_,
+    const pair<int, int>& rule_,
+    const bool& constant_interpolation_)
   : constant_interpolation(constant_interpolation_)
 {
 
@@ -38,7 +43,8 @@ SimpleInterpolation::SimpleInterpolation(const vector<double>& x_, const vector<
 
 }
 
-double SimpleInterpolation::interpolate(const double& v)
+double
+SimpleInterpolation::interpolate(const double& v)
 {
   if(!is_finite(v))
     return v;

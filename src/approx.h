@@ -6,9 +6,8 @@ using namespace std;
 pair<vector<double>, vector<double> > tie_mean(const vector<double>& x_, const vector<double>& y_);
 
 class SimpleInterpolation {
+  //compared to R: constant = method 2, linear = method 1
   bool constant_interpolation;
-  //constant = method 2, linear = method 1
-  // rule = 1: NA, rule = 2: closest to extreme
 
   double ylow;
   double yhigh;
@@ -24,6 +23,7 @@ class SimpleInterpolation {
   vector<double> x;
   vector<double> y;
 
+  // rule = 1: NA, rule = 2: closest to extreme
   public:
     SimpleInterpolation(const vector<double>& x_, const vector<double>& y_, const double& f_, const pair<int, int>& rule_, const bool& constant_interpolation_);
     double interpolate(const double& v);

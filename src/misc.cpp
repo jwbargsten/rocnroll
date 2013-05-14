@@ -27,7 +27,7 @@ order(const vector<double>& d)
   return(idx);
 }
 
-vector<string> 
+vector<string>
 splitLine(string& line)
 {
   vector<string>   result;
@@ -42,7 +42,7 @@ splitLine(string& line)
   return result;
 }
 
-vector<double> 
+vector<double>
 numseq(double min, double max, long length)
 {
   double range = max - min;

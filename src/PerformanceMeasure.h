@@ -14,7 +14,7 @@ namespace PerformanceMeasure {
       static std::string name() { return "none"; }
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,
@@ -32,7 +32,7 @@ namespace PerformanceMeasure {
       static std::string name() { return "cutoff"; }
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,
@@ -56,7 +56,7 @@ namespace PerformanceMeasure {
       static std::string name() { return "tpr"; }
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,
@@ -66,7 +66,7 @@ namespace PerformanceMeasure {
       {
         vector<double> res;
 
-        for(int i=0; i < n; i++) { 
+        for(int i=0; i < n; i++) {
           double tpr = (double)tp[i]/num_pos;
           //if(!is_finite<double>(tpr))
             //throw BadNumber(name() + "-measure: non-finite number: " + std::to_string(tpr) );
@@ -82,7 +82,7 @@ namespace PerformanceMeasure {
       static std::string name() { return "ppv"; }
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,
@@ -92,7 +92,7 @@ namespace PerformanceMeasure {
       {
         vector<double> res;
 
-        for(int i=0; i < n; i++) { 
+        for(int i=0; i < n; i++) {
           double ppv = (double)tp[i]/(fp[i]+tp[i]);
           //if(!is_finite<double>(ppv))
             //throw BadNumber(name() + "-measure: non-finite number: " + std::to_string(ppv) );
@@ -108,7 +108,7 @@ namespace PerformanceMeasure {
       static std::string name() { return "fpr"; }
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,
@@ -118,7 +118,7 @@ namespace PerformanceMeasure {
       {
         vector<double> res;
 
-        for(int i=0; i < n; i++) { 
+        for(int i=0; i < n; i++) {
           double fpr = (double)fp[i]/num_neg;
           //if(!is_finite<double>(fpr))
             //throw BadNumber(name() + "-measure: non-finite number: " + std::to_string(fpr) );
@@ -134,7 +134,7 @@ namespace PerformanceMeasure {
       static std::string name() { return "auc"; }
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,
@@ -157,7 +157,7 @@ namespace PerformanceMeasure {
         if(std::isnan(last_y))
           last_y = 0;
 
-        for(int i=1; i < n; i++) { 
+        for(int i=1; i < n; i++) {
           double x = (double) tp[i]/num_pos;
 
           if(std::isnan(x))
@@ -191,7 +191,7 @@ namespace PerformanceMeasure {
       static std::string name() { return "auc"; }
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,
@@ -214,7 +214,7 @@ namespace PerformanceMeasure {
         if(std::isnan(last_y))
           last_y = 0;
 
-        for(int i=1; i < n; i++) { 
+        for(int i=1; i < n; i++) {
           double x = (double) fp[i]/num_neg;
           if(!is_finite<double>(x))
             continue;
@@ -243,7 +243,7 @@ namespace PerformanceMeasure {
       FSCORE() : alpha(0.5) {}
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,
@@ -253,7 +253,7 @@ namespace PerformanceMeasure {
       {
         vector<double> res;
 
-        for(int i=0; i < n; i++) { 
+        for(int i=0; i < n; i++) {
           double ppv = (double)tp[i]/(fp[i]+tp[i]);
           double tpr = (double)tp[i]/num_pos;
 
@@ -271,7 +271,7 @@ namespace PerformanceMeasure {
       static std::string name() { return "fmax"; }
       inline vector<double> compute(
          const int& n,
-         const int& num_neg, 
+         const int& num_neg,
          const int& num_pos,
          const vector<double>& cutoffs,
          const vector<int>& fp,

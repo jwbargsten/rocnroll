@@ -62,25 +62,24 @@ int main(int argc, char *argv[])
 
     cerr << endl;
     cout << it->first
-      << "\t" 
+      << "\t"
       << unroc.num_pred
-      << "\t" 
+      << "\t"
       << unroc.num_uniq_pred
-      << "\t" 
+      << "\t"
       << unroc.num_neg
-      << "\t" 
+      << "\t"
       << unroc.num_pos
-      << "\t" 
+      << "\t"
       << unroc.num_pred_zero
-      << "\t" 
+      << "\t"
       << unroc.num_pred_one
-      << "\t" 
-      << perf_aucroc.y_values.front() 
-      << "\t" 
+      << "\t"
+      << perf_aucroc.y_values.front()
+      << "\t"
       << perf_aucpr.y_values.front()
-      << "\t" 
+      << "\t"
       << perf_fmax.y_values.front()
       << endl;
   }
-
 }

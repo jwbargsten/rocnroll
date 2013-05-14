@@ -28,8 +28,12 @@ class Performance : public IPerformance {
     string alpha_name;
 
     Performance(const Prediction& prediction_) : measure_x(MX()), measure_y(MY()), prediction(prediction_) {}
+
     Performance() : measure_x(MX()), measure_y(MY()) {}
-    Performance(const vector<double>& x_values_, const vector<double>& y_values_, const vector<double>& alpha_values_, const string& alpha_name_) : measure_x(MX()), measure_y(MY()), x_values(x_values_), y_values(y_values_), alpha_values(alpha_values_), alpha_name(alpha_name_) {}
+
+    Performance(const vector<double>& x_values_, const vector<double>& y_values_, const vector<double>& alpha_values_, const string& alpha_name_)
+      : measure_x(MX()), measure_y(MY()), x_values(x_values_), y_values(y_values_), alpha_values(alpha_values_), alpha_name(alpha_name_)
+    {}
 
     virtual void compute();
     virtual void makeFinite();
@@ -40,7 +44,8 @@ class Performance : public IPerformance {
 
 
 template <class MX, class MY>
-void Performance<MX, MY>::compute()
+void
+Performance<MX, MY>::compute()
 {
   y_values.clear();
   x_values.clear();
@@ -80,9 +85,11 @@ void Performance<MX, MY>::compute()
 }
 
 template <class MX, class MY>
-void Performance<MX, MY>::printYAML(const string& name, const string& indent)
+void
+Performance<MX, MY>::printYAML(const string& name, const string& indent)
 {
   cout.precision(15);
+
   if(!name.empty())
     cout << indent << "_name: \"" << name << "\"" << endl;
   cout << indent << "x_values: [" << join<vector<double>::const_iterator>(x_values.begin(), x_values.end(), ", ") << "]" << endl;
@@ -96,13 +103,15 @@ void Performance<MX, MY>::printYAML(const string& name, const string& indent)
 }
 
 template <class MX, class MY>
-void Performance<MX, MY>::printYAML()
+void
+Performance<MX, MY>::printYAML()
 {
   printYAML(string(), "");
 }
 
 template <class MX, class MY>
-void Performance<MX, MY>::makeFinite()
+void
+Performance<MX, MY>::makeFinite()
 {
 
   double max = -std::numeric_limits<double>::infinity();
@@ -136,9 +145,9 @@ void Performance<MX, MY>::makeFinite()
   for(vector<int>::const_iterator it = inf_idcs.begin(); it != inf_idcs.end(); ++it)
     alpha_values[*it] = max_inf;
 
-  vector<double> x_values_fin;
-  vector<double> y_values_fin;
-  vector<double> alpha_values_fin;
+  vector<double> x_values_finite;
+  vector<double> y_values_finite;
+  vector<double> alpha_values_finite;
 
   vector<double>::const_iterator itx = x_values.begin();
   vector<double>::const_iterator ity = y_values.begin();
@@ -146,14 +155,15 @@ void Performance<MX, MY>::makeFinite()
 
   for(; itx != x_values.end(); ++itx, ++ity, ++ita) {
     if(is_finite(*itx) && is_finite(*ity)) {
-      x_values_fin.push_back(*itx);
-      y_values_fin.push_back(*ity);
-      alpha_values_fin.push_back(*ita);
+      x_values_finite.push_back(*itx);
+      y_values_finite.push_back(*ity);
+      alpha_values_finite.push_back(*ita);
     }
   }
-  alpha_values = alpha_values_fin;
-  x_values = x_values_fin;
-  y_values = y_values_fin;
+
+  alpha_values = alpha_values_finite;
+  x_values = x_values_finite;
+  y_values = y_values_finite;
 
   return;
 }
@@ -167,7 +177,6 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
   double max = -std::numeric_limits<double>::infinity();
   double min = std::numeric_limits<double>::infinity();
   int cnt_longest = 0;
-
 
   for(typename vector<Performance<MX, MY> >::iterator it = perfs.begin(); it != perfs.end(); ++it) {
     it->makeFinite();
@@ -224,6 +233,5 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
   Performance<MX, MY> avg_perf(x_values_avg, y_values_avg, alpha_values_avg, "avgcutoff");
   return avg_perf;
 }
-
 
 #endif

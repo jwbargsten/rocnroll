@@ -26,20 +26,29 @@ unordered_map<string, pair<vector<double>, vector<int> > >
 readData(const string& file);
 
 class BadNumber : public std::runtime_error {
+  public:
+    BadNumber(std::string const& s)
+      : std::runtime_error(s)
+      { }
+};
+
+class BadConversion : public std::runtime_error {
 public:
-  BadNumber(std::string const& s)
+  BadConversion(std::string const& s)
     : std::runtime_error(s)
     { }
 };
 
 template<typename T>
-inline bool is_finite(T value)
+inline bool
+is_finite(T value)
 {
   return value == value && (value - value) == 0;
 }
 
 template <typename Iter>
-std::string join(Iter begin, Iter end, std::string const& separator)
+std::string
+join(Iter begin, Iter end, std::string const& separator)
 {
   std::ostringstream result;
   result.precision(15);
@@ -50,14 +59,8 @@ std::string join(Iter begin, Iter end, std::string const& separator)
   return result.str();
 }
 
-class BadConversion : public std::runtime_error {
-public:
-  BadConversion(std::string const& s)
-    : std::runtime_error(s)
-    { }
-};
-
-inline double convertToDouble(std::string const& s)
+inline double
+convertToDouble(std::string const& s)
 {
   if(s == "Inf")
     return std::numeric_limits<double>::infinity();
@@ -70,7 +73,8 @@ inline double convertToDouble(std::string const& s)
   return x;
 }
 
-inline int convertToInt(std::string const& s)
+inline int
+convertToInt(std::string const& s)
 {
   std::istringstream i(s);
   int x;
@@ -79,7 +83,8 @@ inline int convertToInt(std::string const& s)
   return x;
 }
 
-inline bool pairSort(pair<int , vector<double>::const_iterator> a, pair<int, vector<double>::const_iterator> b)
+inline bool
+pairSort(pair<int , vector<double>::const_iterator> a, pair<int, vector<double>::const_iterator> b)
 {
   return(*(a.second) > *(b.second));
 }

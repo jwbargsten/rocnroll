@@ -4,13 +4,12 @@
 #include "Prediction.h"
 #include "misc.h"
 
-Prediction::Prediction(const vector<double>& p_, const vector<int>& l_) :
-  p(p_), l(l_)
+Prediction::Prediction(const vector<double>& p_, const vector<int>& l_)
+  : p(p_), l(l_)
 {}
 
 Prediction::Prediction()
-{
-}
+{}
 
 void Prediction::compute()
 {
@@ -135,4 +134,3 @@ void Prediction::printYAML()
 {
   printYAML(string(), true, "");
 }
-

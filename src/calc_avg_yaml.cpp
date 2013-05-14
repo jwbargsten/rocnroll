@@ -85,6 +85,3 @@ int main(int argc, char *argv[])
     perf_pr_avg.printYAML("theshold_avg", " ");
     cerr << endl;
 }
-
- 
-
