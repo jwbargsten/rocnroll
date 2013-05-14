@@ -22,8 +22,13 @@ class Prediction {
 
     int num_pos;
     int num_neg;
+
     int num_pred;
     int num_uniq_pred;
+
+    int num_pred_one;
+    int num_pred_zero;
+
     vector<int> num_pos_pred;
     vector<int> num_neg_pred;
 

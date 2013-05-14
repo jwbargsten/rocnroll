@@ -53,6 +53,8 @@ void Prediction::compute()
 
     /* start with one prediction since we pushed std values above on the arrays */
     num_uniq_pred = 1;
+    num_pred_zero = 1;
+    num_pred_one = 0;
 
     /* variables for cumulative sum */
     int fp_tmp = 0;
@@ -69,6 +71,12 @@ void Prediction::compute()
       }
 
       num_uniq_pred++;
+
+      if(p[*it] == 0)
+        num_pred_zero++;
+      if(p[*it] == 1)
+        num_pred_one++;
+
       cutoffs.push_back(p[*it]);
 
       /* invert: 0 -> 1, 1 -> 0 */

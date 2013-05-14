@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
   bool isSlim = false;
 
   std::cout.precision(15);
-  unordered_map<string, pair<vector<double>, vector<int>>> data;
 
   int optind = 1;
   cerr << "reading in " << argv[optind] << endl;
@@ -37,6 +36,7 @@ int main(int argc, char *argv[])
       exit(1);
   }
 
+  unordered_map<string, pair<vector<double>, vector<int> > > data;
   vector<string> row;
   for (string line; getline(in, line, '\n');) {
     /* skip empty lines */
@@ -54,10 +54,10 @@ int main(int argc, char *argv[])
   //unordered_map<string, Prediction> rocdata;
 
   /* set header */
-  cout << "group\tn_pred\tn_uniq_pred\tn_neg\tn_pos\taucroc\taucpr\tfmax" << endl;
+  cout << "group\tn_pred\tn_uniq_pred\tn_neg\tn_pos\tn_pred_zero\tn_pred_one\taucroc\taucpr\tfmax" << endl;
 
   /* iterate over x-validations */
-  unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
+  unordered_map<string, pair<vector<double>, vector<int>>>::const_iterator it;
   for(it = data.begin(); it != data.end(); ++it) {
     cerr << it->first << ": ";
     /* first is the name of the group */
@@ -84,6 +84,10 @@ int main(int argc, char *argv[])
       << unroc.num_neg
       << "\t" 
       << unroc.num_pos
+      << "\t" 
+      << unroc.num_pred_zero
+      << "\t" 
+      << unroc.num_pred_one
       << "\t" 
       << perf_aucroc.y_values.front() 
       << "\t" 
