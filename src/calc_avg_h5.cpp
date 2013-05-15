@@ -40,10 +40,10 @@ int main(int argc, char *argv[])
       }
 
 
-  std::cout.precision(15);
-
   cerr << "reading in " << argv[optind] << endl;
+  cerr << "writing to " << argv[optind+1] << endl;
   string file(argv[optind]);
+  string outfile(argv[optind+1]);
   unordered_map<string, pair<vector<double>, vector<int> > > data = readData(file);
 
   /* calc cutoff/fp/tp for every cv */
@@ -73,15 +73,15 @@ int main(int argc, char *argv[])
     cerr << endl;
 
   }
-  cerr << "roc avg" << endl;
-  pair<Performance<PerfM::FPR, PerfM::TPR>,int> perf_roc_avg = averagePerformance<PerfM::FPR, PerfM::TPR>(perfs_roc);
-    cout << "---" << endl;
-    cout << "perf_roc:" << endl;
-    perf_roc_avg.first.printYAML("threshold_avg", " ");
+
+  //FIXME cleaner usage of hdf5 stuff (don't call write_hdf5 here or add groups to h5 file here)
+  H5File h5file( outfile, H5F_ACC_TRUNC );
+  pair<Performance<PerfM::FPR, PerfM::TPR>, int> perf_roc_avg = averagePerformance<PerfM::FPR, PerfM::TPR>(perfs_roc);
+  perf_roc_avg.first.H5Add(&h5file, "perf_roc", "threshold_avg");
+  write_hdf5(&h5file, perf_roc_avg.second, "/perf_roc/skipped_groups");
 
   cerr << "pr avg" << endl;
-  pair<Performance<PerfM::TPR, PerfM::PPV>,int> perf_pr_avg = averagePerformance<PerfM::TPR, PerfM::PPV>(perfs_pr);
-    cout << "perf_pr:" << endl;
-    perf_pr_avg.first.printYAML("theshold_avg", " ");
-    cerr << endl;
+  pair<Performance<PerfM::TPR, PerfM::PPV>, int> perf_pr_avg = averagePerformance<PerfM::TPR, PerfM::PPV>(perfs_pr);
+  perf_pr_avg.first.H5Add(&h5file, "perf_pr", "threshold_avg");
+  write_hdf5(&h5file, perf_pr_avg.second, "/perf_pr/skipped_groups");
 }

@@ -140,8 +140,6 @@ class MeasureTest : public CxxTest::TestSuite
     perf.compute();
 
     H5File file( "/tmp/test.h5", H5F_ACC_TRUNC );
-    perf.H5Add(file, "test");
-
-
+    perf.H5Add(&file, "test");
   }
 };

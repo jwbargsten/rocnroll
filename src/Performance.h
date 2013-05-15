@@ -44,7 +44,7 @@ class Performance : public IPerformance {
     virtual void printYAML();
     virtual void printYAML(const string& name, const string& indent);
 
-    void H5Add(H5File& file, const string& grp_name, const string& name);
+    void H5Add(H5File *file, const string& grp_name, const string& name);
 };
 
 
@@ -111,9 +111,9 @@ Performance<MX, MY>::printYAML(const string& name, const string& indent)
 
 template <class MX, class MY>
 void
-Performance<MX, MY>::H5Add(H5File& file, const string& grp_name, const string& name = "unnamed")
+Performance<MX, MY>::H5Add(H5File* file, const string& grp_name, const string& name)
 {
-  file.createGroup( "/" + grp_name );
+  file->createGroup( "/" + grp_name );
 
   if(!name.empty())
     write_hdf5(file, name, "/" + grp_name + "/name");
@@ -194,7 +194,7 @@ Performance<MX, MY>::makeFinite()
 }
 
 template <class MX, class MY>
-Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
+pair<Performance<MX, MY>,int> averagePerformance(vector<Performance<MX, MY> > perfs)
 {
 
   /* find the minimum, maximum and the longest sample of all alpha values */
@@ -222,6 +222,7 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
   vector<double> y_values_avg(cnt_longest, 0);
 
   int cnt_valid_perfs = 0;
+  int skipped_groups = 0;
   for(typename vector<Performance<MX, MY> >::iterator it = perfs.begin(); it != perfs.end(); ++it) {
     /* interpolate new adjusted x-values with average alpha values */
     /* SimpleInterpolation(
@@ -246,6 +247,7 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
       cnt_valid_perfs++;
     } catch (std::runtime_error& e) {
       cerr << "Warning: " << e.what() << ", skipping group" << endl;
+      skipped_groups++;
       continue;
     }
   }
@@ -256,7 +258,7 @@ Performance<MX, MY> averagePerformance(vector<Performance<MX, MY> > perfs)
   }
 
   Performance<MX, MY> avg_perf(x_values_avg, y_values_avg, alpha_values_avg, "avgcutoff");
-  return avg_perf;
+  return make_pair(avg_perf, skipped_groups);
 }
 
 #endif
