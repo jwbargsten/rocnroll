@@ -12,6 +12,7 @@
 #include "misc.h"
 #include "approx.h"
 #include "IPerformance.h"
+#include "H5IO.h"
 
 
 using namespace std;
@@ -107,36 +108,6 @@ Performance<MX, MY>::printYAML(const string& name, const string& indent)
   cout << indent << "alpha_values: [" << joinDoubleYAML(alpha_values.begin(), alpha_values.end(), ", ") << "]" << endl;
 }
 
-inline void
-write_hdf5(H5File& file, vector<double> const& v, string const& name)
-{
-  if(v.size() == 0) {
-    DataSpace dspace(H5S_NULL);
-    DataSet dset = file.createDataSet( name, PredType::NATIVE_DOUBLE, dspace );
-  } else {
-    hsize_t dim[1];
-    dim[0] = v.size();
-    DataSpace dspace(1, dim); // create new dspace
-    FloatType dtype( PredType::NATIVE_DOUBLE );
-    DataSet dset = file.createDataSet( name, dtype, dspace );
-    dset.write(v.data(), dtype);
-  }
-  return;
-}
-
-inline void
-write_hdf5(H5File& file, string const& v, string const& name)
-{
-  hsize_t dim[1];
-  dim[0] = 1;
-  const char *t[1] = { v.c_str() };
-
-  DataSpace dspace(1, dim); // create new dspace
-  StrType dtype(0, H5T_VARIABLE);
-  DataSet dset = file.createDataSet( name, dtype, dspace );
-  dset.write(t, dtype);
-  return;
-}
 
 template <class MX, class MY>
 void
