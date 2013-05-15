@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <H5Cpp.h>
 
 #include <cxxtest/TestSuite.h>
 #include "../src/misc.h"
@@ -12,6 +13,7 @@
 #define DELTA 0.00000000001
 
 namespace PerfM = PerformanceMeasure;
+using namespace H5;
 
 class MeasureTest : public CxxTest::TestSuite
 {
@@ -106,5 +108,40 @@ class MeasureTest : public CxxTest::TestSuite
       TS_ASSERT_DELTA(perf.x_values[i],y_values[i], DELTA);
       TS_ASSERT_DELTA(perf.alpha_values[i],alpha_values[i], DELTA);
     }
+  }
+  void testH5(void)
+  {
+    /* 
+     library(ROCR)
+     data(ROCR.xval)
+     write.table(cbind(ROCR.xval$predictions[[1]], ROCR.xval$labels[[1]]), "rocr.xval.1cv.tsv", row.names=F, col.names=F, quote=F,sep="\t")
+     p <- prediction(ROCR.xval$predictions[[1]], ROCR.xval$labels[[1]])
+     perf <- performance(p, "auc")
+     perf@y.values
+     */
+    ifstream in("data/rocr.xval.1cv.tsv");
+    TS_ASSERT(in && !in.bad());
+
+    vector<double> p;
+    vector<int> l;
+    for (string line; getline(in, line, '\n');) {
+      /* skip empty lines */
+      if(line.length() == 0)
+        continue;
+
+      vector<string> row = splitLine(line);
+      p.push_back(convertToDouble(row[0]));
+      l.push_back(convertToInt(row[1]));
+    }
+
+    Prediction pred(p, l);
+    pred.compute();
+    Performance<PerfM::None, PerfM::AUCROC> perf(pred);
+    perf.compute();
+
+    H5File file( "/tmp/test.h5", H5F_ACC_TRUNC );
+    perf.H5Add(file, "test");
+
+
   }
 };

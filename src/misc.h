@@ -10,8 +10,10 @@
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
+#include <H5Cpp.h>
 
 using namespace std;
+using namespace H5;
 
 vector<int>
 order(const vector<double>& d);
@@ -24,6 +26,9 @@ numseq(double min, double max, long length);
 
 unordered_map<string, pair<vector<double>, vector<int> > >
 readData(const string& file);
+
+std::string
+joinDoubleYAML(vector<double>::const_iterator begin, vector<double>::const_iterator end, std::string const& separator);
 
 class BadNumber : public std::runtime_error {
   public:
@@ -59,6 +64,7 @@ join(Iter begin, Iter end, std::string const& separator)
   return result.str();
 }
 
+
 inline double
 convertToDouble(std::string const& s)
 {
@@ -71,6 +77,23 @@ convertToDouble(std::string const& s)
   if (!(i >> x))
     throw BadConversion("convertToDouble(\"" + s + "\")");
   return x;
+}
+
+inline std::string
+convertToYAMLString(double const& d)
+{
+  std::ostringstream s;
+  s.precision(15);
+
+  if(d == std::numeric_limits<double>::infinity())
+    s << ".inf";
+  else if(d == -std::numeric_limits<double>::infinity())
+    s << "-.inf";
+  else if(d != d)
+    s << ".NaN";
+  else s << fixed << d;
+
+  return s.str();
 }
 
 inline int

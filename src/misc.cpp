@@ -4,8 +4,11 @@
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
+#include <H5Cpp.h>
 
 #include "misc.h"
+
+using namespace H5;
 
 vector<int>
 order(const vector<double>& d)
@@ -87,3 +90,20 @@ readData(const string& file)
   }
   return data;
 }
+
+std::string
+joinDoubleYAML(vector<double>::const_iterator begin, vector<double>::const_iterator end, std::string const& separator)
+{
+  std::ostringstream result;
+  result.precision(15);
+  if (begin != end) {
+    result << convertToYAMLString(*begin);
+    begin++;
+  }
+  while (begin != end) {
+    result << separator << convertToYAMLString(*begin);
+    begin++;
+  }
+  return result.str();
+}
+

@@ -2,15 +2,15 @@
 
 CXX=g++
 RM=rm
-CXXFLAGS=-std=c++0x -O3 -fomit-frame-pointer -march=native 
+CXXFLAGS=-std=c++0x -O3 -fomit-frame-pointer -march=native
 LDFLAGS=
-LDLIBS=
+LDLIBS=-lhdf5 -lhdf5_cpp
 
 DEPS=approx.h IPerformance.h misc.h Performance.h PerformanceMeasure.h Prediction.h
 SRCS=Prediction.cpp misc.cpp approx.cpp
 OBJS=$(subst .cpp,.o,$(SRCS))
 
-all: calc_auc calc_all_yaml calc_avg_yaml
+all: calc_auc calc_all_yaml calc_avg_yaml calc_avg_h5
 
 calc_auc: $(OBJS) $(DEPS) calc_auc.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
@@ -18,7 +18,10 @@ calc_auc: $(OBJS) $(DEPS) calc_auc.o
 calc_all_yaml: $(OBJS) $(DEPS) calc_all_yaml.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-calc_avg_yaml: $(OBJS) $(DEPS) calc_avg_yaml.o 
+calc_avg_yaml: $(OBJS) $(DEPS) calc_avg_yaml.o
+	g++ $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+calc_avg_h5: $(OBJS) $(DEPS) calc_avg_h5.o
 	g++ $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 %.o: %.cpp

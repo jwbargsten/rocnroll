@@ -7,7 +7,7 @@ CXXTESTFLAGS=--error-printer
 RM=rm
 CXXFLAGS=-std=c++0x -O3 -fomit-frame-pointer -march=native $(INCLUDE)
 LDFLAGS=
-LDLIBS=
+LDLIBS=-lhdf5 -lhdf5_cpp
 
 DEPS=$(addprefix ../src/,approx.h IPerformance.h misc.h Performance.h PerformanceMeasure.h Prediction.h)
 SRCS=$(addprefix ../src/,Prediction.cpp misc.cpp approx.cpp)
@@ -20,7 +20,7 @@ all: test_measure test_approx
 	$(CXXTEST) $(CXXTESTFLAGS) -o $@ $< 
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS) -c $< $(LDLIBS)
 
 test_measure: $(OBJS) measure.test.o $(DEPS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)

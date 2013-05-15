@@ -106,13 +106,11 @@ void Prediction::printYAML(const string& name, bool slim, const string& indent)
 {
   cout.precision(15);
   if(!name.empty())
-    cout << indent << "_name: \"" << name << "\"" << endl;
+    cout << indent << "name: \"" << name << "\"" << endl;
   if(!slim) {
     cout << indent << "l: [" << join<vector<int>::const_iterator>(l.begin(), l.end(), ", ") << "]" << endl;
 
-    cout << indent << "p: [" << join<vector<double>::const_iterator>(p.begin(), p.end(), ", ") << "]" << endl;
-    //not necessary
-    //cout << "  \"idx\":[" << join<vector<int>::const_iterator>(idcs.begin(), idcs.end(), "\n" + indent + " - ") << "]," << endl;
+    cout << indent << "p: [" << joinDoubleYAML(p.begin(), p.end(), ", ") << "]" << endl;
   }
   cout << indent << "num_pos: " << num_pos << endl;
   cout << indent << "num_neg: " << num_neg << endl;
@@ -127,7 +125,7 @@ void Prediction::printYAML(const string& name, bool slim, const string& indent)
   cout << indent << "fn: [" << join<vector<int>::const_iterator>(fn.begin(), fn.end(), ", ") << "]" << endl;
   cout << indent << "tn: [" << join<vector<int>::const_iterator>(tn.begin(), tn.end(), ", ") << "]" << endl;
 
-  cout << indent << "cutoffs: [" << join<vector<double>::const_iterator>(cutoffs.begin(), cutoffs.end(), ", ") << "]" << endl;
+  cout << indent << "cutoffs: [" << joinDoubleYAML(cutoffs.begin(), cutoffs.end(), ", ") << "]" << endl;
 }
 
 void Prediction::printYAML()

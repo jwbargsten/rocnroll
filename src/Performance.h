@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <vector>
+#include <H5Cpp.h>
 
 #include <cmath>
 
@@ -12,7 +13,9 @@
 #include "approx.h"
 #include "IPerformance.h"
 
+
 using namespace std;
+using namespace H5;
 
 template <class MX, class MY>
 class Performance : public IPerformance {
@@ -39,6 +42,8 @@ class Performance : public IPerformance {
     virtual void makeFinite();
     virtual void printYAML();
     virtual void printYAML(const string& name, const string& indent);
+
+    void H5Add(H5File& file, const string& grp_name, const string& name);
 };
 
 
@@ -91,15 +96,64 @@ Performance<MX, MY>::printYAML(const string& name, const string& indent)
   cout.precision(15);
 
   if(!name.empty())
-    cout << indent << "_name: \"" << name << "\"" << endl;
-  cout << indent << "x_values: [" << join<vector<double>::const_iterator>(x_values.begin(), x_values.end(), ", ") << "]" << endl;
+    cout << indent << "name: \"" << name << "\"" << endl;
+  cout << indent << "x_values: [" << joinDoubleYAML(x_values.begin(), x_values.end(), ", ") << "]" << endl;
 
-  cout << indent << "y_values: [" << join<vector<double>::const_iterator>(y_values.begin(), y_values.end(), ", ") << "]" << endl;
+  cout << indent << "y_values: [" << joinDoubleYAML(y_values.begin(), y_values.end(), ", ") << "]" << endl;
 
   cout << indent << "x_name: " << MX::name() << endl;
   cout << indent << "y_name: " << MY::name() << endl;
 
-  cout << indent << "alpha_values: [" << join<vector<double>::const_iterator>(alpha_values.begin(), alpha_values.end(), ", ") << "]" << endl;
+  cout << indent << "alpha_values: [" << joinDoubleYAML(alpha_values.begin(), alpha_values.end(), ", ") << "]" << endl;
+}
+
+inline void
+write_hdf5(H5File& file, vector<double> const& v, string const& name)
+{
+  if(v.size() == 0) {
+    DataSpace dspace(H5S_NULL);
+    DataSet dset = file.createDataSet( name, PredType::NATIVE_DOUBLE, dspace );
+  } else {
+    hsize_t dim[1];
+    dim[0] = v.size();
+    DataSpace dspace(1, dim); // create new dspace
+    FloatType dtype( PredType::NATIVE_DOUBLE );
+    DataSet dset = file.createDataSet( name, dtype, dspace );
+    dset.write(v.data(), dtype);
+  }
+  return;
+}
+
+inline void
+write_hdf5(H5File& file, string const& v, string const& name)
+{
+  hsize_t dim[1];
+  dim[0] = 1;
+  const char *t[1] = { v.c_str() };
+
+  DataSpace dspace(1, dim); // create new dspace
+  StrType dtype(0, H5T_VARIABLE);
+  DataSet dset = file.createDataSet( name, dtype, dspace );
+  dset.write(t, dtype);
+  return;
+}
+
+template <class MX, class MY>
+void
+Performance<MX, MY>::H5Add(H5File& file, const string& grp_name, const string& name = "unnamed")
+{
+  file.createGroup( "/" + grp_name );
+
+  if(!name.empty())
+    write_hdf5(file, name, "/" + grp_name + "/name");
+
+  write_hdf5(file, y_values, "/" + grp_name + "/y_values");
+  write_hdf5(file, x_values, "/" + grp_name + "/x_values");
+  write_hdf5(file, alpha_values, "/" + grp_name + "/alpha_values");
+  write_hdf5(file, MX::name(), "/" + grp_name + "/x_name");
+  write_hdf5(file, MY::name(), "/" + grp_name + "/y_name");
+
+  return;
 }
 
 template <class MX, class MY>
