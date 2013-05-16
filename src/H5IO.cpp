@@ -27,36 +27,30 @@ write_hdf5(H5File *file, vector<double> const& v, string const& name)
 void
 write_hdf5(H5File *file, const int v, string const& name)
 {
-  hsize_t dim[1];
-  dim[0] = 1;
-  int data[1];
-  data[0] = v;
-  
-  DataSpace dspace(1, dim); // create new dspace
+  DataSpace dspace(H5S_SCALAR); // create new dspace
   IntType dtype( PredType::NATIVE_INT );
   DataSet dset = file->createDataSet( name, dtype, dspace );
-  dset.write(data, dtype);
+  dset.write(&v, dtype);
   return;
 }
 
 void
 write_hdf5(H5File *file, const double v, string const& name)
 {
-  vector<double> d(1,v);
-  write_hdf5(file, d, name);
+  DataSpace dspace(H5S_SCALAR); // create new dspace
+  FloatType dtype( PredType::NATIVE_FLOAT );
+  DataSet dset = file->createDataSet( name, dtype, dspace );
+  dset.write(&v, dtype);
   return;
 }
 
 void
 write_hdf5(H5File *file, string const& v, string const& name)
 {
-  hsize_t dim[1];
-  dim[0] = 1;
-  const char *t[1] = { v.c_str() };
 
-  DataSpace dspace(1, dim); // create new dspace
+  DataSpace dspace(H5S_SCALAR); // create new dspace
   StrType dtype(0, H5T_VARIABLE);
   DataSet dset = file->createDataSet( name, dtype, dspace );
-  dset.write(t, dtype);
+  dset.write(v, dtype);
   return;
 }

@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <algorithm>
 #include <vector>
+#include <iostream>
+#include <sstream>
 #include <H5Cpp.h>
 
 #include <cmath>
@@ -45,6 +47,8 @@ class Performance : public IPerformance {
     virtual void printYAML(const string& name, const string& indent);
 
     void H5Add(H5File *file, const string& grp_name, const string& name);
+    void H5Add(H5File* file, const string& grp_name);
+    void H5Add(H5File* file);
 };
 
 
@@ -113,18 +117,37 @@ template <class MX, class MY>
 void
 Performance<MX, MY>::H5Add(H5File* file, const string& grp_name, const string& name)
 {
-  file->createGroup( "/" + grp_name );
+  std::ostringstream prefix;
+  prefix << "/";
+  if(!grp_name.empty()) {
+    prefix << grp_name << "/";
+    file->createGroup( "/" + grp_name );
+  }
 
   if(!name.empty())
-    write_hdf5(file, name, "/" + grp_name + "/name");
+    write_hdf5(file, name, prefix.str() + "name");
 
-  write_hdf5(file, y_values, "/" + grp_name + "/y_values");
-  write_hdf5(file, x_values, "/" + grp_name + "/x_values");
-  write_hdf5(file, alpha_values, "/" + grp_name + "/alpha_values");
-  write_hdf5(file, MX::name(), "/" + grp_name + "/x_name");
-  write_hdf5(file, MY::name(), "/" + grp_name + "/y_name");
+  write_hdf5(file, y_values, prefix.str() + "y_values");
+  write_hdf5(file, x_values, prefix.str() + "x_values");
+  write_hdf5(file, alpha_values, prefix.str() + "alpha_values");
+  write_hdf5(file, MX::name(), prefix.str() + "x_name");
+  write_hdf5(file, MY::name(), prefix.str() + "y_name");
 
   return;
+}
+
+template <class MX, class MY>
+void
+Performance<MX, MY>::H5Add(H5File* file, const string& grp_name)
+{
+  return H5Add(file, grp_name, "unnamed");
+}
+
+template <class MX, class MY>
+void
+Performance<MX, MY>::H5Add(H5File* file)
+{
+  return H5Add(file, "", "unnamed");
 }
 
 template <class MX, class MY>
@@ -138,7 +161,6 @@ template <class MX, class MY>
 void
 Performance<MX, MY>::makeFinite()
 {
-
   double max = -std::numeric_limits<double>::infinity();
   double diff_mean = 0;
 
@@ -147,6 +169,7 @@ Performance<MX, MY>::makeFinite()
   int num_finite_idcs = 0;
   int last_finite_idx = -1;
 
+  /* the idea is to find the maximum to substitute inf with ... */
   for(int i = 0; i< alpha_values.size(); i++) {
     if(is_finite(alpha_values[i])) {
 
@@ -165,8 +188,10 @@ Performance<MX, MY>::makeFinite()
   }
 
 
+  /* ... max + (mean of (differences between consecutive alpha_values)) ... */
   double max_inf = max + (diff_mean/num_finite_idcs);
 
+  /* ... in all all alpha_values that are not finite */
   for(vector<int>::const_iterator it = inf_idcs.begin(); it != inf_idcs.end(); ++it)
     alpha_values[*it] = max_inf;
 
@@ -178,6 +203,7 @@ Performance<MX, MY>::makeFinite()
   vector<double>::const_iterator ity = y_values.begin();
   vector<double>::const_iterator ita = alpha_values.begin();
 
+  /* omit all tuples (x, y, alpha_value) where either x or y are not finite */
   for(; itx != x_values.end(); ++itx, ++ity, ++ita) {
     if(is_finite(*itx) && is_finite(*ity)) {
       x_values_finite.push_back(*itx);
@@ -193,8 +219,15 @@ Performance<MX, MY>::makeFinite()
   return;
 }
 
+struct avgPerformanceResultInfo {
+  int valid_groups;
+  int skipped_groups;
+  int total_groups;
+};
+
+
 template <class MX, class MY>
-pair<Performance<MX, MY>,int> averagePerformance(vector<Performance<MX, MY> > perfs)
+pair<Performance<MX, MY>,avgPerformanceResultInfo> averagePerformance(vector<Performance<MX, MY> > perfs)
 {
 
   /* find the minimum, maximum and the longest sample of all alpha values */
@@ -205,24 +238,32 @@ pair<Performance<MX, MY>,int> averagePerformance(vector<Performance<MX, MY> > pe
 
   for(typename vector<Performance<MX, MY> >::iterator it = perfs.begin(); it != perfs.end(); ++it) {
     it->makeFinite();
+    /* find minimum and maximum of alpha_values over all groups */
     double tmax = *max_element(it->alpha_values.begin(), it->alpha_values.end());
     double tmin = *min_element(it->alpha_values.begin(), it->alpha_values.end());
     if(tmax > max)
       max = tmax;
     if(tmin < min)
       min = tmin;
+    /* also find the group with longest alpha_values vector (needed for interpolation) */
     if(it->alpha_values.size() > cnt_longest)
       cnt_longest = it->alpha_values.size();
   }
 
+  /* create a equally spaced sequence of alpha_values to represent the average alpha_values */
   vector<double> alpha_values_avg = numseq(min, max, cnt_longest);
   reverse(alpha_values_avg.begin(), alpha_values_avg.end());
 
+  /* initialize the average x and y values with 0 */
   vector<double> x_values_avg(cnt_longest, 0);
   vector<double> y_values_avg(cnt_longest, 0);
 
-  int cnt_valid_perfs = 0;
-  int skipped_groups = 0;
+  /* keep track of valid (for avg calculation) missing (just for info) groups */
+  avgPerformanceResultInfo info;
+  info.total_groups = perfs.size();
+  info.valid_groups = 0;
+  info.skipped_groups = 0;
+
   for(typename vector<Performance<MX, MY> >::iterator it = perfs.begin(); it != perfs.end(); ++it) {
     /* interpolate new adjusted x-values with average alpha values */
     /* SimpleInterpolation(
@@ -236,29 +277,44 @@ pair<Performance<MX, MY>,int> averagePerformance(vector<Performance<MX, MY> > pe
     if(it->alpha_values.size() < 2)
       continue;
 
+    /* only add to total avg, if SimpleInterpolation does not have any errors */
+    double x_avg = 0;
+    double y_avg = 0;
     try {
       SimpleInterpolation xapprox = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2), false);
       SimpleInterpolation yapprox = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2), false);
 
+      /* add up interpolated x and y values */
       for(int i = 0; i < cnt_longest; i++) {
-        x_values_avg[i] += xapprox.interpolate(alpha_values_avg[i]);
-        y_values_avg[i] += yapprox.interpolate(alpha_values_avg[i]);
+        x_avg += xapprox.interpolate(alpha_values_avg[i]);
+        y_avg += yapprox.interpolate(alpha_values_avg[i]);
       }
-      cnt_valid_perfs++;
+
+      /* and count the group */
+      info.valid_groups++;
+
+      /* but only if SimpleInterpolation does not throw an exception */
     } catch (std::runtime_error& e) {
       cerr << "Warning: " << e.what() << ", skipping group" << endl;
-      skipped_groups++;
+
+      /* in this case we skip the interpolation for the whole group */
+      info.skipped_groups++;
       continue;
     }
+    /* if everything was interpolated successfully, add it to the total average */
+    x_values_avg[i] += x_avg;
+    y_values_avg[i] += y_avg;
   }
 
+  /* calculate the mean/average */
   for(int i = 0; i< alpha_values_avg.size(); i++) {
-    x_values_avg[i] /= cnt_valid_perfs;
-    y_values_avg[i] /= cnt_valid_perfs;
+    x_values_avg[i] /= info.valid_groups;
+    y_values_avg[i] /= info.valid_groups;
   }
 
+  /* create a performance object from the averages */
   Performance<MX, MY> avg_perf(x_values_avg, y_values_avg, alpha_values_avg, "avgcutoff");
-  return make_pair(avg_perf, skipped_groups);
+  return make_pair(avg_perf, info);
 }
 
 #endif

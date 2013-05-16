@@ -74,14 +74,17 @@ int main(int argc, char *argv[])
 
   }
 
-  //FIXME cleaner usage of hdf5 stuff (don't call write_hdf5 here or add groups to h5 file here)
   H5File h5file( outfile, H5F_ACC_TRUNC );
-  pair<Performance<PerfM::FPR, PerfM::TPR>, int> perf_roc_avg = averagePerformance<PerfM::FPR, PerfM::TPR>(perfs_roc);
+  pair<Performance<PerfM::FPR, PerfM::TPR>, avgPerformanceResultInfo> perf_roc_avg = averagePerformance<PerfM::FPR, PerfM::TPR>(perfs_roc);
   perf_roc_avg.first.H5Add(&h5file, "perf_roc", "threshold_avg");
-  write_hdf5(&h5file, perf_roc_avg.second, "/perf_roc/skipped_groups");
+  write_hdf5(&h5file, perf_roc_avg.second.skipped_groups, "/perf_roc/skipped_groups");
+  write_hdf5(&h5file, perf_roc_avg.second.total_groups, "/perf_roc/total_groups");
+  write_hdf5(&h5file, perf_roc_avg.second.valid_groups, "/perf_roc/valid_groups");
 
   cerr << "pr avg" << endl;
-  pair<Performance<PerfM::TPR, PerfM::PPV>, int> perf_pr_avg = averagePerformance<PerfM::TPR, PerfM::PPV>(perfs_pr);
+  pair<Performance<PerfM::TPR, PerfM::PPV>, avgPerformanceResultInfo> perf_pr_avg = averagePerformance<PerfM::TPR, PerfM::PPV>(perfs_pr);
   perf_pr_avg.first.H5Add(&h5file, "perf_pr", "threshold_avg");
-  write_hdf5(&h5file, perf_pr_avg.second, "/perf_pr/skipped_groups");
+  write_hdf5(&h5file, perf_pr_avg.second.skipped_groups, "/perf_pr/skipped_groups");
+  write_hdf5(&h5file, perf_pr_avg.second.total_groups, "/perf_pr/total_groups");
+  write_hdf5(&h5file, perf_pr_avg.second.valid_groups, "/perf_pr/valid_groups");
 }

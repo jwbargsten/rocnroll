@@ -74,13 +74,13 @@ int main(int argc, char *argv[])
 
   }
   cerr << "roc avg" << endl;
-  pair<Performance<PerfM::FPR, PerfM::TPR>,int> perf_roc_avg = averagePerformance<PerfM::FPR, PerfM::TPR>(perfs_roc);
+  pair<Performance<PerfM::FPR, PerfM::TPR>,avgPerformanceResultInfo> perf_roc_avg = averagePerformance<PerfM::FPR, PerfM::TPR>(perfs_roc);
     cout << "---" << endl;
     cout << "perf_roc:" << endl;
     perf_roc_avg.first.printYAML("threshold_avg", " ");
 
   cerr << "pr avg" << endl;
-  pair<Performance<PerfM::TPR, PerfM::PPV>,int> perf_pr_avg = averagePerformance<PerfM::TPR, PerfM::PPV>(perfs_pr);
+  pair<Performance<PerfM::TPR, PerfM::PPV>,avgPerformanceResultInfo> perf_pr_avg = averagePerformance<PerfM::TPR, PerfM::PPV>(perfs_pr);
     cout << "perf_pr:" << endl;
     perf_pr_avg.first.printYAML("theshold_avg", " ");
     cerr << endl;

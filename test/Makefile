@@ -9,8 +9,8 @@ CXXFLAGS=-std=c++0x -O3 -fomit-frame-pointer -march=native $(INCLUDE)
 LDFLAGS=
 LDLIBS=-lhdf5_cpp -lhdf5
 
-DEPS=$(addprefix ../src/,approx.h IPerformance.h misc.h Performance.h PerformanceMeasure.h Prediction.h)
-SRCS=$(addprefix ../src/,Prediction.cpp misc.cpp approx.cpp)
+DEPS=$(addprefix ../src/,approx.h IPerformance.h misc.h Performance.h PerformanceMeasure.h Prediction.h H5IO.h)
+SRCS=$(addprefix ../src/,Prediction.cpp misc.cpp approx.cpp H5IO.cpp)
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 
