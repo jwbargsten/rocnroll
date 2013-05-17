@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include <memory>
 #include <vector>
 #include <iterator>
 #include <sstream>
@@ -45,7 +46,7 @@ int main(int argc, char *argv[])
 
   cerr << "reading in " << argv[optind] << endl;
   string file(argv[optind]);
-  unordered_map<string, pair<vector<double>, vector<int> > > data = readData(file);
+  shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > > data = readData(file);
 
   /* calc cutoff/fp/tp for every cv */
 
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
 
   /* iterate over x-validations */
   unordered_map<string, pair<vector<double>, vector<int>>>::iterator it;
-  for(it = data.begin(); it != data.end(); ++it) {
+  for(it = data->begin(); it != data->end(); ++it) {
     cerr << it->first << endl;
     /* first is the name of the group */
     /* second -> the label-prediction pair 2nd second -> the label */

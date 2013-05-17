@@ -10,6 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include <unordered_map>
+#include <memory>
 #include <H5Cpp.h>
 
 using namespace std;
@@ -18,13 +19,14 @@ using namespace H5;
 vector<int>
 order(const vector<double>& d);
 
+inline
 vector<string>
 splitLine(string& line);
 
 vector<double>
 numseq(double min, double max, long length);
 
-unordered_map<string, pair<vector<double>, vector<int> > >
+shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > >
 readData(const string& file);
 
 std::string

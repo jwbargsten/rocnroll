@@ -4,6 +4,7 @@
 #include "Prediction.h"
 #include "misc.h"
 
+bool Prediction::verbose = true;
 Prediction::Prediction(const vector<double>& p_, const vector<int>& l_)
   : p(p_), l(l_)
 {}
@@ -92,7 +93,10 @@ void Prediction::compute()
       num_neg_pred.push_back(tn.back() + fn.back());
 
     }
-    cerr << num_uniq_pred << "/" << num_pred;
+
+    if(verbose)
+      cerr << num_uniq_pred << "/" << num_pred;
+
     if(num_pred != p.size())
       throw std::runtime_error("ERROR number of total predictions do not fit");
     if(num_uniq_pred != cutoffs.size() ||  num_uniq_pred != fp.size())

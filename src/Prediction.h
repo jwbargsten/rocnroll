@@ -15,6 +15,8 @@ using namespace std;
 class Prediction {
 
   public:
+    static bool verbose;
+
     vector<double> p;
     vector<int> l;
 
