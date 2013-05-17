@@ -277,39 +277,38 @@ pair<Performance<MX, MY>,avgPerformanceResultInfo> averagePerformance(vector<Per
     if(it->alpha_values.size() < 2)
       continue;
 
-    /* only add to total avg, if SimpleInterpolation does not have any errors */
-    double x_avg = 0;
-    double y_avg = 0;
-    try {
-      SimpleInterpolation xapprox = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2), false);
-      SimpleInterpolation yapprox = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2), false);
+    SimpleInterpolation xapprox;
+    SimpleInterpolation yapprox;
 
-      /* add up interpolated x and y values */
-      for(int i = 0; i < cnt_longest; i++) {
-        x_avg += xapprox.interpolate(alpha_values_avg[i]);
-        y_avg += yapprox.interpolate(alpha_values_avg[i]);
-      }
+    /* only add to total avg, if SimpleInterpolation does not have any errors */
+    try {
+      xapprox = SimpleInterpolation(it->alpha_values, it->x_values, 0, make_pair(2,2), false);
+      yapprox = SimpleInterpolation(it->alpha_values, it->y_values, 0, make_pair(2,2), false);
 
       /* and count the group */
       info.valid_groups++;
 
-      /* but only if SimpleInterpolation does not throw an exception */
     } catch (std::runtime_error& e) {
       cerr << "Warning: " << e.what() << ", skipping group" << endl;
 
-      /* in this case we skip the interpolation for the whole group */
+      /* or skip the complete group if we cannot interpolate,
+       * a common problem is a vector of alpha values with (0, Inf)
+       */
       info.skipped_groups++;
       continue;
     }
-    /* if everything was interpolated successfully, add it to the total average */
-    x_values_avg[i] += x_avg;
-    y_values_avg[i] += y_avg;
+
+    /* add up interpolated x and y values */
+    for(int i = 0; i < cnt_longest; i++) {
+      x_values_avg[i] += xapprox.interpolate(alpha_values_avg[i]);
+      y_values_avg[i] += yapprox.interpolate(alpha_values_avg[i]);
+    }
   }
 
   /* calculate the mean/average */
   for(int i = 0; i< alpha_values_avg.size(); i++) {
-    x_values_avg[i] /= info.valid_groups;
-    y_values_avg[i] /= info.valid_groups;
+    x_values_avg[i] /= info.total_groups;
+    y_values_avg[i] /= info.total_groups;
   }
 
   /* create a performance object from the averages */

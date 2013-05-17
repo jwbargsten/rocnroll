@@ -26,5 +26,6 @@ class SimpleInterpolation {
   // rule = 1: NA, rule = 2: closest to extreme
   public:
     SimpleInterpolation(const vector<double>& x_, const vector<double>& y_, const double& f_, const pair<int, int>& rule_, const bool& constant_interpolation_);
+    SimpleInterpolation() {}
     double interpolate(const double& v);
 };
