@@ -62,7 +62,9 @@ void Prediction::compute()
     for(vector<int>::const_iterator it = idcs.begin(); it != idcs.end(); ++it)
     {
       num_pred++;
+
       /* skip duplicates */
+      /* skip if the predicted value is equal to the predicted value of the next prediction */
 
       fp_tmp += -1 * (l[*it] - 1);
       tp_tmp += l[*it];
