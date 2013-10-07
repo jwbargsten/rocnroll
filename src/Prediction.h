@@ -1,5 +1,6 @@
 #ifndef ROCNROLL_PREDICTION_H
 #define ROCNROLL_PREDICTION_H
+#include <config.h>
 
 #include <vector>
 #include <fstream>

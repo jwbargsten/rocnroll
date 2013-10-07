@@ -1,13 +1,14 @@
 #ifndef ROCNROLL_PERFORMANCE_H
 #define ROCNROLL_PERFORMANCE_H
 
+#include <config.h>
 #include <stdexcept>
 #include <algorithm>
 #include <vector>
 #include <iostream>
 #include <sstream>
 
-#if defined(H5_OUTPUT)
+#ifdef HAVE_LIBH5
   #include <H5Cpp.h>
   #include "H5IO.h"
 #endif
@@ -48,7 +49,7 @@ class Performance : public IPerformance {
     virtual void printYAML();
     virtual void printYAML(const string& name, const string& indent);
 
-#if defined(H5_OUTPUT)
+#ifdef HAVE_LIBH5
     void H5Add(H5::H5File *file, const string& grp_name, const string& name);
     void H5Add(H5::H5File* file, const string& grp_name);
     void H5Add(H5::H5File* file);
@@ -116,7 +117,7 @@ Performance<MX, MY>::printYAML(const string& name, const string& indent)
   cout << indent << "alpha_values: [" << joinDoubleYAML(alpha_values.begin(), alpha_values.end(), ", ") << "]" << endl;
 }
 
-#if defined(H5_OUTPUT)
+#ifdef HAVE_LIBH5
 
   template <class MX, class MY>
   void

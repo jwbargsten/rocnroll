@@ -1,3 +1,4 @@
+#include <config.h>
 #include <vector>
 #include <string>
 #include <H5Cpp.h>

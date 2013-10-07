@@ -1,6 +1,8 @@
 #ifndef ROCNROLL_MISC_H
 #define ROCNROLL_MISC_H
 
+#include <config.h>
+
 #include <limits>
 #include <iostream>
 #include <sstream>

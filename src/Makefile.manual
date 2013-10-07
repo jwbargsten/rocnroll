@@ -9,7 +9,7 @@ DEPS=approx.h IPerformance.h misc.h Performance.h PerformanceMeasure.h Predictio
 SRCS=Prediction.cpp misc.cpp approx.cpp 
 OBJS=$(subst .cpp,.o,$(SRCS))
 
-DEPSH5=$(DEPS) H5IO.h
+DEPSH5=$(DEPS) H5IO.h ../config.h
 SRCSH5=$(SRCS) H5IO.cpp
 OBJSH5=$(subst .cpp,.o,$(SRCSH5))
 
@@ -27,7 +27,7 @@ calc_avg_yaml: $(OBJS) $(DEPS) calc_avg_yaml.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 calc_avg_h5: $(OBJSH5) $(DEPSH5) calc_avg_h5.o
-	LD_LIBRARY_PATH=../hdf5-1.8.11-linux-x86_64-shared/lib \
+	#LD_LIBRARY_PATH=../hdf5-1.8.11-linux-x86_64-shared/lib \
 	$(CXX) \
 		-I../hdf5-1.8.11-linux-x86_64-shared/include \
 		$(CXXFLAGS) \

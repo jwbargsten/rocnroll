@@ -1,6 +1,7 @@
 #ifndef ROCNROLL_IPERFORMANCE_H
 #define ROCNROLL_IPERFORMANCE_H
 
+#include <config.h>
 #include <string>
 
 using namespace std;

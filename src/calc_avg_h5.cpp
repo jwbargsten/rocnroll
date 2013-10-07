@@ -1,3 +1,4 @@
+#include <config.h>
 #include <fstream>
 #include <memory>
 #include <limits>
@@ -11,8 +12,9 @@
 #include <algorithm>
 
 #include <getopt.h>
+#include <H5Cpp.h>
 
-#define H5_OUTPUT
+#include "H5IO.h"
 
 #include "Performance.h"
 #include "PerformanceMeasure.h"
@@ -23,6 +25,7 @@
 namespace PerfM = PerformanceMeasure;
 
 using namespace std;
+using namespace H5;
 
 /*
  * input data structure: group <tab> prediction <tab> label

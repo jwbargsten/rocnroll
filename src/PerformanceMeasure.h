@@ -1,5 +1,6 @@
 #ifndef ROCNROLL_MEASURE_H
 #define ROCNROLL_MEASURE_H
+#include <config.h>
 #include <iostream>
 #include <string>
 #include <cmath>
