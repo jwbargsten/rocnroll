@@ -11,10 +11,8 @@
 #include <algorithm>
 #include <unordered_map>
 #include <memory>
-#include <H5Cpp.h>
 
 using namespace std;
-using namespace H5;
 
 vector<int>
 order(const vector<double>& d);

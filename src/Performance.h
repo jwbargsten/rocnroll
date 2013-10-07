@@ -6,7 +6,11 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
-#include <H5Cpp.h>
+
+#if defined(H5_OUTPUT)
+  #include <H5Cpp.h>
+  #include "H5IO.h"
+#endif
 
 #include <cmath>
 
@@ -14,11 +18,9 @@
 #include "misc.h"
 #include "approx.h"
 #include "IPerformance.h"
-#include "H5IO.h"
 
 
 using namespace std;
-using namespace H5;
 
 template <class MX, class MY>
 class Performance : public IPerformance {
@@ -46,9 +48,11 @@ class Performance : public IPerformance {
     virtual void printYAML();
     virtual void printYAML(const string& name, const string& indent);
 
-    void H5Add(H5File *file, const string& grp_name, const string& name);
-    void H5Add(H5File* file, const string& grp_name);
-    void H5Add(H5File* file);
+#if defined(H5_OUTPUT)
+    void H5Add(H5::H5File *file, const string& grp_name, const string& name);
+    void H5Add(H5::H5File* file, const string& grp_name);
+    void H5Add(H5::H5File* file);
+#endif
 };
 
 
@@ -112,43 +116,46 @@ Performance<MX, MY>::printYAML(const string& name, const string& indent)
   cout << indent << "alpha_values: [" << joinDoubleYAML(alpha_values.begin(), alpha_values.end(), ", ") << "]" << endl;
 }
 
+#if defined(H5_OUTPUT)
 
-template <class MX, class MY>
-void
-Performance<MX, MY>::H5Add(H5File* file, const string& grp_name, const string& name)
-{
-  std::ostringstream prefix;
-  prefix << "/";
-  if(!grp_name.empty()) {
-    prefix << grp_name << "/";
-    file->createGroup( "/" + grp_name );
+  template <class MX, class MY>
+  void
+  Performance<MX, MY>::H5Add(H5::H5File* file, const string& grp_name, const string& name)
+  {
+    std::ostringstream prefix;
+    prefix << "/";
+    if(!grp_name.empty()) {
+      prefix << grp_name << "/";
+      file->createGroup( "/" + grp_name );
+    }
+
+    if(!name.empty())
+      write_hdf5(file, name, prefix.str() + "name");
+
+    write_hdf5(file, y_values, prefix.str() + "y_values");
+    write_hdf5(file, x_values, prefix.str() + "x_values");
+    write_hdf5(file, alpha_values, prefix.str() + "alpha_values");
+    write_hdf5(file, MX::name(), prefix.str() + "x_name");
+    write_hdf5(file, MY::name(), prefix.str() + "y_name");
+
+    return;
   }
 
-  if(!name.empty())
-    write_hdf5(file, name, prefix.str() + "name");
+  template <class MX, class MY>
+  void
+  Performance<MX, MY>::H5Add(H5::H5File* file, const string& grp_name)
+  {
+    return H5Add(file, grp_name, "unnamed");
+  }
 
-  write_hdf5(file, y_values, prefix.str() + "y_values");
-  write_hdf5(file, x_values, prefix.str() + "x_values");
-  write_hdf5(file, alpha_values, prefix.str() + "alpha_values");
-  write_hdf5(file, MX::name(), prefix.str() + "x_name");
-  write_hdf5(file, MY::name(), prefix.str() + "y_name");
+  template <class MX, class MY>
+  void
+  Performance<MX, MY>::H5Add(H5File* file)
+  {
+    return H5Add(file, "", "unnamed");
+  }
 
-  return;
-}
-
-template <class MX, class MY>
-void
-Performance<MX, MY>::H5Add(H5File* file, const string& grp_name)
-{
-  return H5Add(file, grp_name, "unnamed");
-}
-
-template <class MX, class MY>
-void
-Performance<MX, MY>::H5Add(H5File* file)
-{
-  return H5Add(file, "", "unnamed");
-}
+#endif
 
 template <class MX, class MY>
 void

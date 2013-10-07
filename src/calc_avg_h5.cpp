@@ -12,6 +12,8 @@
 
 #include <getopt.h>
 
+#define H5_OUTPUT
+
 #include "Performance.h"
 #include "PerformanceMeasure.h"
 #include "misc.h"

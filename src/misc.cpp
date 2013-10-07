@@ -5,11 +5,8 @@
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
-#include <H5Cpp.h>
 
 #include "misc.h"
-
-using namespace H5;
 
 vector<int>
 order(const vector<double>& d)
