@@ -11,14 +11,14 @@ AX_CXX_COMPILE_STDCXX_0X
 AC_ARG_WITH( [h5], [AS_HELP_STRING([--with-h5], [support h5 @<:@default=no@:>@])], [], [with_h5=no])
           
 LIBH5=
-USE_LIBH5=
+USE_LIBH5=0
 AS_IF([test "x$with_h5" != xno],[
   AC_CHECK_HEADERS([H5Cpp.h],[
       AX_CXX_CHECK_LIB(hdf5_cpp,H5::H5File,[
           AC_SUBST([LIBH5], ["-lhdf5_cpp -lhdf5 -lsz"])
           AC_SUBST([USE_LIBH5], [1])
           AC_DEFINE([HAVE_LIBH5], [1], [Define if you have libh5])
-          HAVE_LIBH5=1
+          USE_LIBH5=1
         ],
         [AC_MSG_FAILURE([--with-h5 was given, but test for h5 failed])],
         [-lhdf5 -lsz]
@@ -28,7 +28,7 @@ AS_IF([test "x$with_h5" != xno],[
   )
 ])
 
-AM_CONDITIONAL([USE_LIBH5], [test "$with_h5" != no -a "$HAVE_LIBH5" -eq 1])
+AM_CONDITIONAL([USE_LIBH5], [test "$with_h5" != no -a "$USE_LIBH5" -eq 1])
 #AC_CHECK_LIB([hdf5],[H5Fcreate])
 
 
