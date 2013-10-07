@@ -68,12 +68,24 @@ numseq(double min, double max, long length)
 }
 
 shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > >
+readData(const char* filearg)
+{
+  if(!filearg)
+      throw std::runtime_error("Supply the right arguments, you idiot! calc_auc [FILENAME]");
+  string file(filearg);
+  return readData(file);
+}
+
+shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > >
 readData(const string& file)
 {
+
+  cerr << "reading in " << file << endl;
+
   ifstream in(file);
 
   if(!in || in.bad())
-      throw std::runtime_error("Supply the right arguments, you idiot! " + file + " [FILENAME]");
+      throw std::runtime_error("Supply the right arguments, you idiot! calc_auc [FILENAME]");
 
   shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > > data(new unordered_map<string, pair<vector<double>, vector<int> > >());
 

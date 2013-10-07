@@ -29,6 +29,9 @@ numseq(double min, double max, long length);
 shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > >
 readData(const string& file);
 
+shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > >
+readData(const char* filearg);
+
 std::string
 joinDoubleYAML(vector<double>::const_iterator begin, vector<double>::const_iterator end, std::string const& separator);
 

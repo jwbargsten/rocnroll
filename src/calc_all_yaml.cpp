@@ -45,9 +45,7 @@ int main(int argc, char *argv[])
 
   std::cout.precision(15);
 
-  cerr << "reading in " << argv[optind] << endl;
-  string file(argv[optind]);
-  shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > > data = readData(file);
+  shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > > data = readData(argv[optind]);
 
   /* calc cutoff/fp/tp for every cv */
 

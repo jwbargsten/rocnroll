@@ -67,10 +67,9 @@ int main(int argc, char *argv[])
   string file(argv[optind]);
   string outfile(argv[optind+1]);
 
-  cerr << "reading in " << argv[optind] << " ... ";
   begin = clock();
 
-  shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > > data = readData(file);
+  shared_ptr<unordered_map<string, pair<vector<double>, vector<int> > > > data = readData(argv[optind]);
 
   end = clock();
   elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
